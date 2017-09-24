@@ -1,4 +1,4 @@
-package nl.tue.wir.anton.api.models;
+package nl.tue.wir.anton.models;
 
 public class Paper {
     private String title;
