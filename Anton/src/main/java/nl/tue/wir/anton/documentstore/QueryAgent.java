@@ -52,8 +52,6 @@ public class QueryAgent {
                 Paper paper = new Paper();
 
                 paper.setTitle(doc.get("title"));
-                paper.setPaperAbstract(doc.get("paperAbstract"));
-                paper.setPaperBody(doc.get("paperBody"));
 
                 results.add(paper);
             }

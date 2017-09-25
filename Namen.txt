@@ -1,3 +1,4 @@
 Anton --> Textsearch (Lucene)
 Athena --> Datamining
 Odin --> Django
+Khione --> Frontend
