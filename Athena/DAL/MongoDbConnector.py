@@ -24,3 +24,6 @@ class MongoDbConnector:
 
     def getCollectionForDatabase(self, database_name, collection_name):
         return self.client[database_name].collection[collection_name]
+
+    def deleteCollection(self, database_name, collection_name):
+        self.client[database_name].drop_collection(collection_name)
