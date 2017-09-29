@@ -1,0 +1,14 @@
+Requirements:
+
+Author:
+ALS gebruiker WIL IK zoeken op een auteur ZODAT ik data van deze auteur kan opvragen WAARBIJ de papers van de auteur, gerelateerde autors en topics in een generiek overzicht wordt getoond.
+ALS gebruiker WIL IK door kunnen klikken op een auteur ZODAT ik de details van deze auteur kan inzien WAARBIJ topics, influence, related authors, (authors influences nice to have)
+
+Topic: 
+ALS gebruiker wil ik zoeken op een topic ZODAT ik data van het topic kan opvragen WAARBIJ het generieke overzicht scherm weer wordt getoond, (papers van topic, related topics en authors gewerkt aan topic) 
+ALS gebruiker WIL IK door kunnen klikken op een topic ZODAT ik de details van het topic kan inzien WAARBIJ ik keywords, authors ranked op influence, papers ranked on influence, snoball grafiek te zien.
+
+Paper: 
+ALS gebruiker WIL IK zoeken op een paper ZODAT ik kan zoeken op deze paper WAARBIJ het generieke overzicht scherm weer wordt getoond. 
+ALS gebruiker WIL IK op een paper klikken ZODAT ik de details van een paper kan inzien WAARBIJ ik de tekst van de paper, de abstract, related paper (op basis van topic), citation graph, auteur, topic
+Word2Vec papers aan elkaar kloppen.
