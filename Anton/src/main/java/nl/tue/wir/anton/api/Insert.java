@@ -34,8 +34,6 @@ public class Insert {
 
         PaperWriter writer = new PaperWriter();
 
-
-
         writer.indexPaper(paper);
 
         return genson.serialize(RequestResult.succeededResult());

@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 
 from DAL.MongoDbConnector import MongoDbConnector
@@ -16,15 +16,18 @@ class Authors(Resource):
 class Papers(Resource):
 
     def __init__(self):
-        self.conn  = MongoDbConnector('mongodb://localhost:27017/')
+        self.conn = MongoDbConnector('mongodb://localhost:27017/')
 
     def put(self):
         entry = request.json
-        entry["Authors"] = []
-        self.conn.insertEntry("SnoBall", "papers", entry)
+        self.conn.insert_entry("SnoBall", "papers", entry)
 
     def delete(self):
-        self.conn.deleteCollection('SnoBall', 'papers')
+        self.conn.delete_collection('SnoBall', 'papers')
+
+    def get(self):
+        return jsonify({"result": self.conn.get_all_entries('SnoBall', 'papers')})
+
 
 #Example to set up restful service
 api.add_resource(Authors, '/authors')

@@ -24,7 +24,6 @@ with open("papers/papers.csv") as csvfile:
     for row in reader:
         row["authors"] = []
         dict[row['id']] = row
-        #put_request("http://localhost:5002/papers", data.encode())
 
 a = pd.read_csv("papers/paper_authors.csv")
 b = pd.read_csv("papers/authors.csv")
