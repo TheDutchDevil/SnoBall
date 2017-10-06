@@ -37,17 +37,4 @@ for temp in results:
     data = json.dumps(paper)
     put_request("http://localhost:2222/papers", data.encode())
 
-with open("papers/papers.csv") as csvfile:
-    reader = csv.DictReader(csvfile, delimiter =",", quotechar="\"")
-    for row in reader:
-        paper = {}
-        paper["title"] = row["title"]
-
-        if row["abstract"] != "Abstract Missing":
-            paper["paperAbstract"] = row["abstract"]
-        paper["paperBody"] = row["paper_text"]
-
-        data = json.dumps(paper)
-
-        put_request("http://localhost:2222/papers", data.encode())
 

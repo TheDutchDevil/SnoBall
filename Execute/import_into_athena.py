@@ -25,7 +25,7 @@ with open("papers/papers.csv") as csvfile:
         row["authors"] = []
         dict[row['id']] = row
 
-a = pd.read_csv("papers/paper_authors.csv")
+a = pd.read_csv("papers/new_paper_authors.csv")
 b = pd.read_csv("papers/authors.csv")
 b.columns = ['author_id', 'name']
 b = b.dropna(axis=1)
