@@ -32,18 +32,20 @@ optp.add_option('-v', '--verbose', dest='verbose', action='count',
                 help='Increase verbosity (specify multiple times for more)'
                 )
 (opts, args) = optp.parse_args()
-log_level = logging.WARNING
+log_level = logging.INFO
 if opts.verbose:
     if opts.verbose == 1:
         log_level = logging.INFO
     elif opts.verbose >= 2:
         log_level = logging.DEBUG
+
+
 logging.getLogger().setLevel(log_level)
 
 # ## Setup
 
 input_file = '../Execute/Papers/authors.csv'
-output_file = 'csv_example_output.csv'
+output_file = 'clusters.csv'
 settings_file = 'csv_example_learned_settings'
 training_file = 'csv_example_training.json'
 
@@ -145,7 +147,7 @@ else:
 # If we had more data, we would not pass in all the blocked data into
 # this function but a representative sample.
 print("Starting threshold")
-threshold = deduper.threshold(data_d, 1.5)
+threshold = deduper.threshold(data_d, .5)
 # ## Clustering
 
 # `match` will return sets of record IDs that dedupe

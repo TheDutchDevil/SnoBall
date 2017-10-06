@@ -4,13 +4,13 @@ import java.util.List;
 
 public class SimpleQueryResult {
 
-    private List<Paper> papers;
+    private List<Object> items;
 
-    public SimpleQueryResult(List<Paper> papers) {
-        this.papers = papers;
+    public SimpleQueryResult(List<Object> items) {
+        this.items = items;
     }
 
-    public List<Paper> getPapers() {
-        return papers;
+    public List<Object> getItems() {
+        return items;
     }
 }

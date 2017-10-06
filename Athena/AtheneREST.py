@@ -10,8 +10,15 @@ app = Flask(__name__)
 api = Api(app)
 
 class Authors(Resource):
+
+    def __init__(self):
+        self.conn = MongoDbConnector('mongodb://localhost:27017')
+
     def get(self):
         return "Example"
+
+    def put(self):
+        self.conn.insertEntry('SnoBall', 'authors', request.json)
 
 class Papers(Resource):
 
