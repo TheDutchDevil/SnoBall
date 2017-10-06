@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar Anton-0.1.jar
+java -jar Anton-0.2.jar
