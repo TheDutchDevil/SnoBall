@@ -140,15 +140,27 @@ print(maxs[['ratio', 'ratio gen', 'text length', 'abstract length']])
 
 #%%
 """
+----------------------- 
+     Approach 
+-----------------------
+1. Find 'abstract' using difflib SequenceMatcher in document
+2. Take paragraphs until 
+        - spot the introduction section 
+        - we reach a certain percentage of total text (cut off ratio)
+For evaluation, we calculated the similarity using difflib's SequenceMatcher.ratio()
+between the abstracts that we found and the reported abstracts.
+
 ------------------------
      Conclusions
 ------------------------
 
 Conclusions of the heuristic approach
 * DATA CLEANING
-  Smaller text lengths can indicate that the parsing of a text is not valid;
-  -> filter papers for which text < 1000 or even 3500
-  
+  - Smaller text lengths can indicate that the parsing of a text is not valid;
+      -> filter papers for which text < 1000 or even 3500
+  - Found some papers that were awfully parsed and created a blacklist
+      -> manual work could be improved in the future by e.g. looking at the ratio of
+      alphabetic/non-alphabetic characters in the text to identify faulty papers
 * CUT OFF RATIO
   Maximum real_abstract/text ratio < 1 is 0.40, second max is 0.072, average/median is 0.03
   -> cut off ratio at most 0.10 
@@ -183,7 +195,6 @@ Conclusions of the heuristic approach
           Average similarity (no cutoff): 0.881125221434
           Average similarity (only cutoff): 0.539041996643
           # cutoffs: 1164
-          
 * There does not seem to be a difference wrt text length and abstract/text
   ratio between different event types. only standard deviation of poster is higher
   but there is one outlier in this case. So this information cannot be used to 
