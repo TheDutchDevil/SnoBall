@@ -60,12 +60,14 @@ public class QueryAgent {
                     paper.setAuthors(genson.deserialize(doc.get("authors"), List.class));
 
                     paper.setTitle(doc.get("title"));
+                    paper.setId(Integer.parseInt(doc.get("id")));
 
                     results.add(paper);
                 } else if(doc.get("type").equals("author")) {
                     Author author = new Author();
 
                     author.setName(doc.get("name"));
+                    author.setId(Integer.parseInt(doc.get("id")));
 
                     results.add(author);
                 }

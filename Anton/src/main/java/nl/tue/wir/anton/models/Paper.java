@@ -7,6 +7,7 @@ public class Paper extends QueryResultParent {
     private String paperAbstract;
     private String paperBody;
     private List<String> authors;
+    private int id;
 
     public String getTitle() {
         return title;
@@ -34,6 +35,14 @@ public class Paper extends QueryResultParent {
 
     public List<String> getAuthors() {
         return authors;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setAuthors(List<String> authors) {
