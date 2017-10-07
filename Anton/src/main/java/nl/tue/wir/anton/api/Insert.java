@@ -1,8 +1,9 @@
 package nl.tue.wir.anton.api;
 
 import com.owlike.genson.Genson;
+import nl.tue.wir.anton.models.Author;
 import nl.tue.wir.anton.models.Paper;
-import nl.tue.wir.anton.documentstore.PaperWriter;
+import nl.tue.wir.anton.documentstore.AntonIndexWriter;
 import nl.tue.wir.anton.models.RequestResult;
 
 import javax.validation.constraints.NotNull;
@@ -30,9 +31,13 @@ public class Insert {
             return genson.serialize(RequestResult.failedResult("Paper body missing"));
         }
 
+        if(paper.getAuthors() == null || paper.getAuthors().size() == 0) {
+            return genson.serialize(RequestResult.failedResult("Authors missing"));
+        }
+
         System.out.println("Indexing: " + paper.getTitle());
 
-        PaperWriter writer = new PaperWriter();
+        AntonIndexWriter writer = new AntonIndexWriter();
 
 
 

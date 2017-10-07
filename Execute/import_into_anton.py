@@ -2,6 +2,7 @@ import csv
 import urllib.request
 import json
 
+
 class RequestWithMethod(urllib.request.Request):
     def __init__(self, *args, **kwargs):
         self._method = kwargs.pop('method', None)
