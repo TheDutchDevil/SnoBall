@@ -1,0 +1,34 @@
+-----------------------
+references.py
+-----------------------
+Python file containing the code that generated the (co)-citation graph.
+
+-----------------------
+Citations-titles.json
+-----------------------
+Dictionary that lists all articles and to which titles it refers.
+- key: article id
+- value: list with titles to which the article refers, as returned by the dblp API
+
+-----------------------
+citation_graph.csv
+-----------------------
+A directed graph in which each node represents an article and in which each edge represents a citation from the current article to another.
+- Source: article that refers to the target node
+- Target: article that is referred to by the source node
+
+-----------------------
+Co-citation_graph.csv
+-----------------------
+An undirected multigraph where each node represents an article and each edge represents a co-citation between the current article and another.
+“Co-citation is defined as the frequency with which two documents are cited together by other documents.[1] If at least one other document cites two documents in common these documents are said to be co-cited. The more co-citations two documents receive, the higher their co-citation strength, and the more likely they are semantically related.” [1]
+
+- Cited by: the article that cited both the source and target node
+- Source: article that refers to the target node
+- Target: article that is referred to by the source node
+
+
+References:
+[1] Henry Small, 1973 "Co-citation in the scientific literature: a new measure of the relationship between two documents" Archived 2012-12-02 at the Wayback Machine.. Journal of the American Society for Information Science, 24:265–269.
+
+

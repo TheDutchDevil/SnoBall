@@ -14,6 +14,7 @@ os.chdir(working_dir)
 NIPS = pd.read_csv("nips-papers/papers.csv")
 authors = pd.read_csv("nips-papers/authors.csv")
 paper_authors = pd.read_csv("nips-papers/paper_authors.csv")
+paper_authors_cleaned = pd.read_csv("nips-papers/new_paper_authors.csv")
 
 #%%
 """
@@ -157,7 +158,34 @@ print(lcounter)
 
 citation_edges.to_csv('citation_graph.csv', index = False)
 
-""" Create and export author citation graph """
+#%%
+""" Create and export co citation graph """
+grouped_citation = citation_edges.groupby(by = 'Source')
+
+target_lists = {}
+for name, group in grouped_citation:
+    target_lists[name] = group['Target'].tolist()
+
+cocitation_sources = []
+cocitation_targets = []
+cocitation_ids = []
+
+for name, value in target_lists.items():
+    for i in list(itertools.combinations(value, 2)):
+        cocitation_ids.append(name)
+        cocitation_sources.append(min(i))
+        cocitation_targets.append(max(i))
+
+co_citation_edges = pd.DataFrame(
+        {'Source':cocitation_sources, 
+         'Target':cocitation_targets,
+         'Cited by':cocitation_ids})
+
+co_citation_edges.to_csv('co-citation_graph.csv', index = False)
+
+#%%
+"""
+# Create and export author citation graph 
 author_sources = []
 author_targets = []
 for i in range(0,len(citations_source)):
@@ -169,14 +197,34 @@ for i in range(0,len(citations_source)):
         for t in authors_target:
             author_sources.append(s)
             author_targets.append(t)
+#print("Number of authors regular: " + str(len(set((author_sources + author_targets)))))
 
 citation_authors_edges = pd.DataFrame(
         {'Source':author_sources, 
          'Target':author_targets})
     
 citation_authors_edges.to_csv('citation_graph_authors.csv', index = False)
-#%%
 
+# Create and export author citation graph cleaned author data
+author_sources = []
+author_targets = []
+for i in range(0,len(citations_source)):
+    source = citations_source[i]
+    target = citations_dest[i]
+    authors_source = paper_authors_cleaned[paper_authors_cleaned['paper_id'] == source].author_id.tolist()
+    authors_target = paper_authors_cleaned[paper_authors_cleaned['paper_id'] == target].author_id.tolist()
+    for s in authors_source:
+        for t in authors_target:
+            author_sources.append(s)
+            author_targets.append(t)
+#print("Number of authors cleaned: " + str(len(set((author_sources + author_targets)))))
+
+citation_authors_edges_cleaned = pd.DataFrame(
+        {'Source':author_sources, 
+         'Target':author_targets})
+    
+citation_authors_edges_cleaned.to_csv('citation_graph_authors_cleaned.csv', index = False)
+"""
 #%%
 import json
 with open('citations-titles.json', 'w') as fp:
@@ -189,4 +237,8 @@ APPROACH
 2. Extract titles from references: heuristic
 3. Find dblp entry based on title from parsed paper: API
 4. Match dblp entries with NIPS database entries: Levenshtein distance
+
+Comments
+- author citation graph is 4070 versus 3950 distinct authors (= nodes) in not cleaned vs. cleaned
+
 """
