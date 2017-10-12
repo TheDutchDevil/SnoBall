@@ -17,8 +17,9 @@ def put_request(url, data):
     request = RequestWithMethod(url, method='PUT', data=data, headers={'Content-Type': 'application/json'})
     return opener.open(request)
 
+
 with open("papers/papers.csv") as csvfile:
-    reader = csv.DictReader(csvfile, delimiter =",", quotechar="\"")
+    reader = csv.DictReader(csvfile, delimiter=",", quotechar="\"")
     for row in reader:
         paper = {}
         paper["title"] = row["title"]
@@ -30,4 +31,3 @@ with open("papers/papers.csv") as csvfile:
         data = json.dumps(paper)
 
         put_request("http://localhost:2222/papers", data.encode())
-

@@ -5,6 +5,7 @@ import java.util.List;
 public class Paper extends QueryResultParent {
     private String title;
     private String paperAbstract;
+    private String gen_abstract;
     private String paperBody;
     private List<String> authors;
     private int id;
@@ -48,6 +49,15 @@ public class Paper extends QueryResultParent {
     public void setAuthors(List<String> authors) {
         this.authors = authors;
     }
+
+    public String getGen_abstract() {
+        return gen_abstract;
+    }
+
+    public void setGen_abstract(String gen_abstract) {
+        this.gen_abstract = gen_abstract;
+    }
+
 
     @Override
     public String getType() {

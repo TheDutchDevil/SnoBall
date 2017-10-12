@@ -45,8 +45,14 @@ b.columns = ['author_id', 'name']
 b = b.dropna(axis=1)
 merged = a.merge(b, on='author_id')
 
+genabstracts = pd.read_csv("papers/gen_abstracts.csv")
+genabstracts.columns = ['paper_id', 'gen_abstract']
+
 for row in merged.itertuples():
     dict[str(row.paper_id)]['authors'].append(row.name)
+
+for gen_abstract in genabstracts.itertuples():
+    dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
 
 papers = []
 

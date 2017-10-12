@@ -5,21 +5,22 @@ Created on Fri Sep 22 11:15:14 2017
 
 @author: hildeweerts
 """
+import csv
 import os
 import pandas as pd
 
-working_dir = '/Users/hildeweerts/Desktop/TUe/2IMM15 Web information retrieval and data mining/'
+working_dir = 'C:/Users/natha/Google Drive/Opleiding/TUe/2IMM15/SnoBall/Execute'
 os.chdir(working_dir)
 
-NIPS = pd.read_csv("nips-papers/papers.csv")
-authors = pd.read_csv("nips-papers/authors.csv")
-paper_authors = pd.read_csv("nips-papers/paper_authors.csv")
+NIPS = pd.read_csv("papers/papers.csv")
+authors = pd.read_csv("papers/new_authors.csv")
+paper_authors = pd.read_csv("papers/new_paper_authors.csv")
 
-#%%
+# %%
 NIPS_noabstr = NIPS[NIPS['abstract'] == 'Abstract Missing'].reset_index()
 NIPS_abstr = NIPS[NIPS['abstract'] != 'Abstract Missing'].reset_index()
 
-#%%
+# %%
 """
 
 """
@@ -27,47 +28,54 @@ import numpy as np
 import re
 from difflib import SequenceMatcher
 
+
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
+
 def find_sub(splits, sub):
-  for idx, s in enumerate(splits):
-      if sub.lower() in s.lower():
-          return idx
-  return None
+    for idx, s in enumerate(splits):
+        if sub.lower() in s.lower():
+            return idx
+    return None
+
 
 sub = 'abstract'
 cutoffratio = 0.08
 library = NIPS
 
-regex = re.compile(r"\s*{0}\s*".format(sub), flags=re.I) #define regex to find sub
+regex = re.compile(r"\s*{0}\s*".format(sub), flags=re.I)  # define regex to find sub
 similarities = [None] * len(library)
 abstracts = [None] * len(library)
 no_abstracts = []
 cutoff = []
 
+done = 0
+
+abstract_output = []
+
 for i in library.iterrows():
     text = i[1]["paper_text"]
     abstract_real = i[1]["abstract"]
-    splits = [x + ".\n" for x in text.split(".\n")]
+    splits = [x + ".\n" for x in text.split(".\r\n")]
     index = find_sub(splits, sub)
-    if index == None: # if there was no match
+    if index == None:  # if there was no match
         abstract = None
         similarity = np.nan
         no_abstracts.append(i[0])
-    else: # if there was a match
+    else:  # if there was a match
         noproblem = True
         idx = index + 1
-        abstract = regex.split(splits[index])[1].replace('\n', ' ') # find initial abstract
+        abstract = regex.split(splits[index])[1].replace('\n', ' ')  # find initial abstract
         while noproblem and idx < len(splits):
             extension = splits[idx].replace('\n', ' ')
             check_intro = extension.split()
             for w in check_intro[0:5]:
                 if '1' in w:
                     noproblem = False
-                if 'introduction' in w.lower(): # check if we arrived at the introduction paragraph
+                if 'introduction' in w.lower():  # check if we arrived at the introduction paragraph
                     noproblem = False
-            if noproblem and (len(abstract + extension)/len(text) > cutoffratio):
+            if noproblem and (len(abstract + extension) / len(text) > cutoffratio):
                 noproblem = False
                 cutoff.append(i[0])
             if noproblem:
@@ -76,23 +84,43 @@ for i in library.iterrows():
         similarity = similar(abstract_real, abstract)
     similarities[i[0]] = similarity
     abstracts[i[0]] = abstract
-    
+
+    abstract_output.append({"id": i[1]["id"], "gen_abstract": abstract})
+
+    done += 1
+
+    if done % 300 == 0:
+        print("Did {} papers".format(done))
+
+print("Writing generated abstracts")
+
+with open("papers/gen_abstracts.csv", 'w+') as newfile:
+    writer = csv.DictWriter(newfile, fieldnames=["id","gen_abstract"])
+
+    writer.writeheader()
+
+    for abstractfound in abstract_output:
+        writer.writerow(abstractfound)
+
+    newfile.flush()
+
+
 print("Number of papers cut off: " + str(len(cutoff)))
-print("Number of abstracts not found: " +str(len(no_abstracts)))
-#%%
+print("Number of abstracts not found: " + str(len(no_abstracts)))
+# %%
 """ 
 ------------------------
      Average similarity
 ------------------------
 """
 similarities_cutoff = [similarities[i] for i in cutoff]
-similarities_nocutoff = [similarities[i] for i in np.delete(range(0,len(similarities)), cutoff, 0)]
+similarities_nocutoff = [similarities[i] for i in np.delete(range(0, len(similarities)), cutoff, 0)]
 
 print("Average similarity: " + str(np.nanmean(similarities)))
 print("Average similarity (no cutoff): " + str(np.nanmean(similarities_nocutoff)))
 print("Average similarity (only cutoff): " + str(np.nanmean(similarities_cutoff)))
 
-#%%
+# %%
 """ 
 ------------------------
      Ratio analysis
@@ -106,12 +134,12 @@ abstract_lengths = [None] * len(NIPS_abstr)
 for i in NIPS_abstr.iterrows():
     text = len(i[1]["paper_text"].replace('\n', ' '))
     abstract_real = len(i[1]["abstract"].replace('\n', ' '))
-    ratio_abstxt[i[0]] = abstract_real/text
+    ratio_abstxt[i[0]] = abstract_real / text
     abstract = abstracts[i[0]]
     if abstract == None:
         ratios_genabstxt[i[0]] = None
     else:
-        ratios_genabstxt[i[0]] = len(abstract)/text
+        ratios_genabstxt[i[0]] = len(abstract) / text
     text_lengths[i[0]] = text
     abstract_lengths[i[0]] = abstract_real
 
@@ -123,9 +151,9 @@ NIPS_abstr["abstract length"] = abstract_lengths
 eventgroups = NIPS_abstr.groupby('event_type')
 means = eventgroups.mean()
 stds = eventgroups.std()
-medians =  eventgroups.median()
-mins =  eventgroups.min()
-maxs =  eventgroups.max()
+medians = eventgroups.median()
+mins = eventgroups.min()
+maxs = eventgroups.max()
 
 print('\n mean:')
 print(means[['ratio', 'ratio gen', 'text length', 'abstract length']])
@@ -138,7 +166,7 @@ print(mins[['ratio', 'ratio gen', 'text length', 'abstract length']])
 print('\n max:')
 print(maxs[['ratio', 'ratio gen', 'text length', 'abstract length']])
 
-#%%
+# %%
 """
 ----------------------- 
      Approach 

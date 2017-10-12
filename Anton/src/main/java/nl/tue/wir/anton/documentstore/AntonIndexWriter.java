@@ -32,6 +32,7 @@ public class AntonIndexWriter {
 
             doc.add(new TextField("title", paper.getTitle(), Field.Store.YES));
             doc.add(new TextField("paperBody", paper.getPaperBody(), Field.Store.NO));
+            doc.add(new TextField("gen_abstract", paper.getGen_abstract(), Field.Store.NO));
 
             doc.add(new StoredField("type", "paper"));
 
