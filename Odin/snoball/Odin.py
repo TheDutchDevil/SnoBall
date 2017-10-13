@@ -16,5 +16,10 @@ def sendQuery():
     r = requests.get(request_url)
     return r.text
 
+@app.route('/paper/details', methods = ['GET'])
+def get_paper():
+    paper_id = request.args.get('id')
+    return paper_id
+
 if __name__ == "__main__":
     app.run()

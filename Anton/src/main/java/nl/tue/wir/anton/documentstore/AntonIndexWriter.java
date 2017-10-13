@@ -32,10 +32,12 @@ public class AntonIndexWriter {
 
             doc.add(new TextField("title", paper.getTitle(), Field.Store.YES));
             doc.add(new TextField("paperBody", paper.getPaperBody(), Field.Store.NO));
+            doc.add(new TextField("gen_abstract", paper.getGen_abstract(), Field.Store.NO));
 
             doc.add(new StoredField("type", "paper"));
 
             doc.add(new StoredField("authors", genson.serialize(paper.getAuthors())));
+            doc.add(new StoredField("id", paper.getId()));
 
             if(paper.getPaperAbstract() == null) {
                 paper.setPaperAbstract("");
@@ -65,6 +67,7 @@ public class AntonIndexWriter {
             doc.add(new TextField("name", author.getName(), Field.Store.YES));
 
             doc.add(new StoredField("type", "author"));
+            doc.add(new StoredField("id", author.getId()));
 
             if(author.getAlternativeNames() != null) {
                 doc.add(new TextField("alternativeNames", author.getAlternativeNames().replace(",", " "), Field.Store.YES));

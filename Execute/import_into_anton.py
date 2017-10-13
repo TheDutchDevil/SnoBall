@@ -29,6 +29,7 @@ results = json.loads(papers.read())['result']
 
 for temp in results:
     paper = {}
+    paper["id"] = temp["id"]
     paper["title"] = temp["title"]
     paper["authors"] = temp["authors"]
     if temp["abstract"] != "Abstract Missing":
@@ -36,5 +37,4 @@ for temp in results:
     paper["paperBody"] = temp["paper_text"]
     data = json.dumps(paper)
     put_request("http://localhost:2222/papers", data.encode())
-
 

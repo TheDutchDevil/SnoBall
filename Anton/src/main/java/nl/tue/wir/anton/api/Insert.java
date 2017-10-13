@@ -35,6 +35,10 @@ public class Insert {
             return genson.serialize(RequestResult.failedResult("Authors missing"));
         }
 
+        if(paper.getGen_abstract() == null) {
+            return genson.serialize(RequestResult.failedResult("gen_abstract missing"));
+        }
+
         System.out.println("Indexing: " + paper.getTitle());
 
         AntonIndexWriter writer = new AntonIndexWriter();

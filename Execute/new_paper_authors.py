@@ -27,3 +27,16 @@ with open("paper_authors.csv") as paperauthors:
             writer.writerow({"paper_id": row["paper_id"], "author_id": idmap[row["author_id"]]})
 
         newfile.flush()
+
+with open("authors.csv") as authors:
+    with open("new_authors.csv", 'w+') as newfile:
+        authorsreader = csv.DictReader(authors, delimiter=",")
+        writer = csv.DictWriter(newfile, fieldnames=["id","name"])
+
+        writer.writeheader()
+
+        for row in authorsreader:
+            if row["id"] in idmap.values():
+                writer.writerow({"id": row["id"], "name": row["name"]})
+
+        newfile.flush()
