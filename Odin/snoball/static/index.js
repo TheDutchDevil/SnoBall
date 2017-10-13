@@ -17,9 +17,9 @@ function sendQuery()
                     if(j == 0){
                         pre = "";
                     }
-                    html_string_authors += (pre + "<a href='#' id='author_link'>" + temp.authors[j] + "</a>");
+                    html_string_authors += (pre + "<a href='/author/details?id=" + temp.authors[j].id"' id='author_link'>" + temp.authors[j] + "</a>");
                 }
-                html_string_papers += "<li><a href='/paper/details?id=1000'><p>" + temp.title + "</p></a>" + html_string_authors + "</li>";
+                html_string_papers += "<li><a href='/paper/details?id="+ temp.id +"'><p>" + temp.title + "</p></a>" + html_string_authors + "</li>";
             }
             $("#result_paper").html(html_string_papers + "</ul>");
         }

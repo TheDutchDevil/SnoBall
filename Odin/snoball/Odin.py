@@ -24,6 +24,12 @@ def get_paper():
     paper = requests.get('http://localhost:5002/papers', params=payload)
     return render_template(paper)
 
+@app.route('/paper/authors', methods = ['GET'])
+def get_author():
+    author_id = request.args.get('id')
+    payload = {'id': author_id}
+    return "ToDo"
+
 if __name__ == "__main__":
     app.run()
 
