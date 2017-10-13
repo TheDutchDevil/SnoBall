@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import json
+import urllib.request
 import requests
 
 app = Flask(__name__)
@@ -19,7 +20,11 @@ def sendQuery():
 @app.route('/paper/details', methods = ['GET'])
 def get_paper():
     paper_id = request.args.get('id')
-    return paper_id
+    payload = {'id': paper_id}
+    paper = requests.get('http://localhost:5002/papers', params=payload)
+    return render_template(paper)
 
 if __name__ == "__main__":
     app.run()
+
+

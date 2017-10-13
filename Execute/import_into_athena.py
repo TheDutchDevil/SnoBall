@@ -27,10 +27,6 @@ with open("papers/papers.csv") as csvfile:
         row["authors"] = []
         dict[row['id']] = row
 
-<<<<<<< HEAD
-a = pd.read_csv("papers/new_paper_authors.csv")
-b = pd.read_csv("papers/authors.csv")
-=======
 authors = []
 
 with open("papers/new_authors.csv") as authorsfile:
@@ -45,7 +41,6 @@ print("Imported authors")
 
 a = pd.read_csv("papers/new_paper_authors.csv")
 b = pd.read_csv("papers/new_authors.csv")
->>>>>>> 7950c52980f9ded0cae5d67ee6d3d39dfd5c4a18
 b.columns = ['author_id', 'name']
 b = b.dropna(axis=1)
 merged = a.merge(b, on='author_id')

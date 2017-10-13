@@ -18,9 +18,9 @@ class Authors(Resource):
 
     def put(self):
         if isinstance(request.json, dict):
-            self.conn.insertEntry('SnoBall', 'authors', request.json)
+            self.conn.insert_entry('SnoBall', 'authors', request.json)
         else:
-            self.conn.insertEntries('SnoBall', 'authors', request.json)
+            self.conn.insert_entries('SnoBall', 'authors', request.json)
 
 class Papers(Resource):
     def __init__(self):
@@ -29,15 +29,20 @@ class Papers(Resource):
     def put(self):
         entry = request.json
         if isinstance(entry, dict):
-            self.conn.insertEntry("SnoBall", "papers", entry)
+            self.conn.insert_entry("SnoBall", "papers", entry)
         else:
-            self.conn.insertEntries("SnoBall", 'papers', entry)
+            self.conn.insert_entries("SnoBall", 'papers', entry)
 
     def delete(self):
         self.conn.delete_collection('SnoBall', 'papers')
 
     def get(self):
-        return jsonify({"result": self.conn.get_all_entries('SnoBall', 'papers')})
+        id = request.args.get('id')
+        if id:
+            query_string = "{'id':{0}}".format(id)
+            return jsonify({"result": self.conn.find_entry('SnoBall', 'papers', query_string)})
+        else:
+            return jsonify({"result": self.conn.get_all_entries('SnoBall', 'papers')})
 
 # Example to set up restful service
 api.add_resource(Authors, '/authors')

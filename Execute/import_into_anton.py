@@ -20,9 +20,8 @@ def put_request(url, data):
 
 def get_request(url):
     opener = urllib.request.build_opener(urllib.request.HTTPHandler)
-    request = RequestWithMethod(url, method='GET', headers={'Content-Type': 'application/json'})
+    request = RequestWithMethod(url, method='GET', headers={'Content-Type': 'application/json', 'Connection': 'close'})
     return opener.open(request)
-
 
 papers = get_request("http://localhost:5002/papers")
 results = json.loads(papers.read())['result']
@@ -32,6 +31,7 @@ for temp in results:
     paper["id"] = temp["id"]
     paper["title"] = temp["title"]
     paper["authors"] = temp["authors"]
+    paper["gen_abstract"] = temp["gen_abstract"]
     if temp["abstract"] != "Abstract Missing":
         paper["paperAbstract"] = temp["abstract"]
     paper["paperBody"] = temp["paper_text"]
