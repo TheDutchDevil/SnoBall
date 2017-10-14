@@ -2,6 +2,7 @@ import csv
 import urllib.request
 import json
 import pandas as pd
+import math
 
 
 class RequestWithMethod(urllib.request.Request):
@@ -52,7 +53,10 @@ for row in merged.itertuples():
     dict[str(row.paper_id)]['authors'].append(row.name)
 
 for gen_abstract in genabstracts.itertuples():
-    dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
+    if type(gen_abstract.gen_abstract) is float:
+        dict[str(gen_abstract.paper_id)]['gen_abstract'] = ""
+    else:
+        dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
 
 papers = []
 

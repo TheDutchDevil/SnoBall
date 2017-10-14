@@ -1,6 +1,7 @@
 import csv
 import urllib.request
 import json
+import requests
 
 
 class RequestWithMethod(urllib.request.Request):
@@ -26,6 +27,8 @@ def get_request(url):
 papers = get_request("http://localhost:5002/papers")
 results = json.loads(papers.read())['result']
 
+papers = []
+
 for temp in results:
     paper = {}
     paper["id"] = temp["id"]
@@ -35,6 +38,9 @@ for temp in results:
     if temp["abstract"] != "Abstract Missing":
         paper["paperAbstract"] = temp["abstract"]
     paper["paperBody"] = temp["paper_text"]
-    data = json.dumps(paper)
-    put_request("http://localhost:2222/papers", data.encode())
+    header = {"Content-Type":"application/json"}
+    papers.append(paper)
+
+
+put_request("http://localhost:2222/papers/many", json.dumps(papers).encode())
 
