@@ -2,15 +2,15 @@ body{
     background-color: #E6E6FA;
 }
 
-#author_link{
+.author-link{
     color: hotpink;
 }
 
 .result-entry {
     padding-top: 5px;
     padding-bottom: 5px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
 
     box-shadow: 3px 3px 2px gray;
     background-color: #c2b5da;
