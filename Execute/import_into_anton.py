@@ -24,6 +24,19 @@ def get_request(url):
     request = RequestWithMethod(url, method='GET', headers={'Content-Type': 'application/json', 'Connection': 'close'})
     return opener.open(request)
 
+authors = get_request("http://localhost:5002/authors")
+author_results = json.loads(authors.read())['result']
+
+authors = []
+
+for author_raw in author_results:
+    author = {}
+    author["id"] = author_raw["id"]
+    author["name"] = author_raw["name"]
+    authors.append(author)
+
+put_request("http://localhost:2222/authors/many", json.dumps(authors).encode())
+
 papers = get_request("http://localhost:5002/papers")
 results = json.loads(papers.read())['result']
 

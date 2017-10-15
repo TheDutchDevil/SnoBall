@@ -1,3 +1,6 @@
+
+var resultsTemplate;
+
 function sendQuery()
 {
     var query_string = $("#query_input").val();
@@ -8,20 +11,36 @@ function sendQuery()
         data: query_string,
         success: function(response){
             var result = JSON.parse(response);
-            var html_string_papers = "<ul>";
-            for(var i = 0; i < result['items'].length; i++){
-                var temp = result['items'][i];
-                var html_string_authors = "";
-                for(var j = 0; j < temp.authors.length; j++){
-                    var pre = ", ";
-                    if(j == 0){
-                        pre = "";
-                    }
-                    html_string_authors += (pre + "<a href='/author/details?id=" + temp.authors[j].id"' id='author_link'>" + temp.authors[j] + "</a>");
+
+            var items = [];
+            for(var i = 0; i < Math.min(result['items'].length, 20); i++){
+
+                var item = result.items[i];
+
+                if(item.type === "paper") {
+                    item.isPaper = true;
+                } else if (item.type === "author") {
+                    item.isAuthor = true;
                 }
-                html_string_papers += "<li><a href='/paper/details?id="+ temp.id +"'><p>" + temp.title + "</p></a>" + html_string_authors + "</li>";
+
+
+                items.push(result.items[i]);
             }
-            $("#result_paper").html(html_string_papers + "</ul>");
+
+            var html = resultsTemplate(items);
+
+            $('#result_paper').html(html);
         }
+    });
+}
+
+window.onload = function () {
+    var source   = $("#results-template").html();
+    resultsTemplate = Handlebars.compile(source);
+
+    Handlebars.registerHelper('eq', function(val, val2, block) {
+      if(val == val2){
+        return block(this);
+      }
     });
 }

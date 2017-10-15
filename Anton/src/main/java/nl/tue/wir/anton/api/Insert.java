@@ -54,6 +54,9 @@ public class Insert {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String putPapers(@NotNull List<Paper> papers) {
+
+        AntonIndexWriter writer = new AntonIndexWriter();
+
         for(Paper paper : papers) {
             if(paper.getTitle() == null) {
                 return genson.serialize(RequestResult.failedResult("Title missing"));
@@ -72,10 +75,6 @@ public class Insert {
             }
 
             System.out.println("Indexing: " + paper.getTitle());
-
-            AntonIndexWriter writer = new AntonIndexWriter();
-
-
 
             writer.indexPaper(paper);
         }

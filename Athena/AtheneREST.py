@@ -14,13 +14,19 @@ class Authors(Resource):
         self.conn = MongoDbConnector('mongodb://localhost:27017')
 
     def get(self):
-        return "Example"
+        id = request.args.get('id')
+        if id:
+            query_string = "['id':{0}".format(id)
+            return jsonify({"result":self.conn.find_entry('SnoBall', 'authors', query_string)})
+        else:
+            return jsonify({"result": self.conn.get_all_entries('SnoBall', 'authors')})
 
     def put(self):
         if isinstance(request.json, dict):
             self.conn.insert_entry('SnoBall', 'authors', request.json)
         else:
             self.conn.insert_entries('SnoBall', 'authors', request.json)
+
 
 class Papers(Resource):
     def __init__(self):
