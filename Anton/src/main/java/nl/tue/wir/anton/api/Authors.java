@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("authors")
 public class Authors {
@@ -29,6 +30,27 @@ public class Authors {
         AntonIndexWriter writer = new AntonIndexWriter();
 
         writer.indexAuthor(author);
+
+        return genson.serialize(RequestResult.succeededResult());
+    }
+
+    @PUT
+    @Path("many")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String putAuthor(@NotNull List<Author> authors) {
+
+        AntonIndexWriter writer = new AntonIndexWriter();
+
+        for(Author author : authors) {
+            if (author.getName() == null) {
+                return genson.serialize(RequestResult.failedResult("Name missing"));
+            }
+
+            System.out.println("Indexing: " + author.getName());
+
+            writer.indexAuthor(author);
+        }
 
         return genson.serialize(RequestResult.succeededResult());
     }

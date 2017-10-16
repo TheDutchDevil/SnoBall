@@ -30,7 +30,31 @@
 
     </div>
     <script src="static/libs/jquery-3.2.1.min.js"></script>
+    <script src="static/handlebars.min-latest.js"></script>
     <script src="static/index.js"></script>
+{% raw %}
+<script id="results-template" type="text/x-handlebars-template">
+
+        {{#each this}}
+        {{#if this.isAuthor }}
+        <div class="result-entry">
+            <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a>
+        </div>
+        {{/if }}
+                {{#if this.isPaper }}
+        <div class="result-entry">
+            <div>
+                <a href='/paper/details?id={{this.id}}'>{{this.title }}</a>
+            </div>
+            <div>
+                Written by: {{#each authors}} {{this}}{{#unless @last}},{{/unless}} {{/each}}
+            </div>
+        </div>
+        {{/if }}
+        {{/each }}
+</script>
+
+{% endraw %}
 
 </body>
 

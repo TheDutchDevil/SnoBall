@@ -6,23 +6,27 @@ class MongoDbConnector:
         self.url = URL
         self.client = MongoClient(URL)
 
-    def insertEntry(self, database_name, collection_name, entry):
-        collection = self.getCollectionForDatabase(database_name, collection_name)
+    def insert_entry(self, database_name, collection_name, entry):
+        collection = self.get_collection_for_database(database_name, collection_name)
         collection.insert_one(entry)
 
-    def insertEntries(self, database_name, collection_name, entries):
-        collection = self.getCollectionForDatabase(database_name, collection_name)
+    def insert_entries(self, database_name, collection_name, entries):
+        collection = self.get_collection_for_database(database_name, collection_name)
         collection.insert_many(entries)
 
-    def findEntry(self, database_name, collection_name, query):
-        collection = self.getCollectionForDatabase(database_name, collection_name)
+    def find_entry(self, database_name, collection_name, query):
+        collection = self.get_collection_for_database(database_name, collection_name)
         return collection.find_one(query)
 
-    def findEntries(self, database_name, collection_name, query):
-        collection = self.getCollectionForDatabase(database_name, collection_name)
+    def find_entries(self, database_name, collection_name, query):
+        collection = self.get_collection_for_database(database_name, collection_name)
         return collection.find_many(query)
 
-    def getCollectionForDatabase(self, database_name, collection_name):
+    def get_all_entries(self, database_name, collection_name):
+        collection = self.get_collection_for_database(database_name, collection_name)
+        return list(collection.find({}, {'_id': False}))
+
+    def get_collection_for_database(self, database_name, collection_name):
         return self.client[database_name].collection[collection_name]
 
     def deleteCollection(self, database_name, collection_name):

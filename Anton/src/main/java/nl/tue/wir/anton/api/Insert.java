@@ -12,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("papers")
 public class Insert {
@@ -35,16 +36,50 @@ public class Insert {
             return genson.serialize(RequestResult.failedResult("Authors missing"));
         }
 
+        if(paper.getGen_abstract() == null) {
+            return genson.serialize(RequestResult.failedResult("gen_abstract missing"));
+        }
+
         System.out.println("Indexing: " + paper.getTitle());
 
         AntonIndexWriter writer = new AntonIndexWriter();
-
-
 
         writer.indexPaper(paper);
 
         return genson.serialize(RequestResult.succeededResult());
     }
 
+    @PUT
+    @Path("many")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String putPapers(@NotNull List<Paper> papers) {
+
+        AntonIndexWriter writer = new AntonIndexWriter();
+
+        for(Paper paper : papers) {
+            if(paper.getTitle() == null) {
+                return genson.serialize(RequestResult.failedResult("Title missing"));
+            }
+
+            if(paper.getPaperBody() == null) {
+                return genson.serialize(RequestResult.failedResult("Paper body missing"));
+            }
+
+            if(paper.getAuthors() == null || paper.getAuthors().size() == 0) {
+                return genson.serialize(RequestResult.failedResult("Authors missing"));
+            }
+
+            if(paper.getGen_abstract() == null) {
+                return genson.serialize(RequestResult.failedResult("gen_abstract missing"));
+            }
+
+            System.out.println("Indexing: " + paper.getTitle());
+
+            writer.indexPaper(paper);
+        }
+
+        return genson.serialize(RequestResult.succeededResult());
+    }
 
 }

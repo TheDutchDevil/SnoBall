@@ -1,3 +1,6 @@
+
+var resultsTemplate;
+
 function sendQuery()
 {
     var query_string = $("#query_input").val();
@@ -9,11 +12,35 @@ function sendQuery()
         success: function(response){
             var result = JSON.parse(response);
 
-            var html_string_papers = "<ul>";
-            for(var i = 0; i < result['papers'].length; i++){
-                html_string_papers += "<li><p>" + result['papers'][i].title + "</p></li>";
+            var items = [];
+            for(var i = 0; i < Math.min(result['items'].length, 20); i++){
+
+                var item = result.items[i];
+
+                if(item.type === "paper") {
+                    item.isPaper = true;
+                } else if (item.type === "author") {
+                    item.isAuthor = true;
+                }
+
+
+                items.push(result.items[i]);
             }
-            $("#result_paper").html(html_string_papers + "</ul>");
+
+            var html = resultsTemplate(items);
+
+            $('#result_paper').html(html);
         }
+    });
+}
+
+window.onload = function () {
+    var source   = $("#results-template").html();
+    resultsTemplate = Handlebars.compile(source);
+
+    Handlebars.registerHelper('eq', function(val, val2, block) {
+      if(val == val2){
+        return block(this);
+      }
     });
 }

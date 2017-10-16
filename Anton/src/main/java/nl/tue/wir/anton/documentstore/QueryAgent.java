@@ -39,7 +39,7 @@ public class QueryAgent {
             IndexReader reader = DirectoryReader.open(indexWriter);
             IndexSearcher searcher = new IndexSearcher(reader);
 
-            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name", "alternativeNames"}, analyzer).parse(query);
+            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name", "alternativeNames", "gen_abstract"}, analyzer).parse(query);
 
             TotalHitCountCollector counter = new TotalHitCountCollector();
 

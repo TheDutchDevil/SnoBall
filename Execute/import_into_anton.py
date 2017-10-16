@@ -1,6 +1,7 @@
 import csv
 import urllib.request
 import json
+import requests
 
 
 class RequestWithMethod(urllib.request.Request):
@@ -17,17 +18,42 @@ def put_request(url, data):
     request = RequestWithMethod(url, method='PUT', data=data, headers={'Content-Type': 'application/json'})
     return opener.open(request)
 
-with open("papers/papers.csv") as csvfile:
-    reader = csv.DictReader(csvfile, delimiter =",", quotechar="\"")
-    for row in reader:
-        paper = {}
-        paper["title"] = row["title"]
 
-        if row["abstract"] != "Abstract Missing":
-            paper["paperAbstract"] = row["abstract"]
-        paper["paperBody"] = row["paper_text"]
+def get_request(url):
+    opener = urllib.request.build_opener(urllib.request.HTTPHandler)
+    request = RequestWithMethod(url, method='GET', headers={'Content-Type': 'application/json', 'Connection': 'close'})
+    return opener.open(request)
 
-        data = json.dumps(paper)
+authors = get_request("http://localhost:5002/authors")
+author_results = json.loads(authors.read())['result']
 
-        put_request("http://localhost:2222/papers", data.encode())
+authors = []
+
+for author_raw in author_results:
+    author = {}
+    author["id"] = author_raw["id"]
+    author["name"] = author_raw["name"]
+    authors.append(author)
+
+put_request("http://localhost:2222/authors/many", json.dumps(authors).encode())
+
+papers = get_request("http://localhost:5002/papers")
+results = json.loads(papers.read())['result']
+
+papers = []
+
+for temp in results:
+    paper = {}
+    paper["id"] = temp["id"]
+    paper["title"] = temp["title"]
+    paper["authors"] = temp["authors"]
+    paper["gen_abstract"] = temp["gen_abstract"]
+    if temp["abstract"] != "Abstract Missing":
+        paper["paperAbstract"] = temp["abstract"]
+    paper["paperBody"] = temp["paper_text"]
+    header = {"Content-Type":"application/json"}
+    papers.append(paper)
+
+
+put_request("http://localhost:2222/papers/many", json.dumps(papers).encode())
 
