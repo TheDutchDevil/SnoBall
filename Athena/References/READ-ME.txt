@@ -31,4 +31,9 @@ An undirected multigraph where each node represents an article and each edge rep
 References:
 [1] Henry Small, 1973 "Co-citation in the scientific literature: a new measure of the relationship between two documents" Archived 2012-12-02 at the Wayback Machine.. Journal of the American Society for Information Science, 24:265–269.
 
+-----------------------
+Cocitation_matrix.csv
+-----------------------
+A matrix with article page indices as rows and columns. Each entry corresponds to the number of times the articles were co-cited. So [1234,4567] is the same as [4567,1234].
+
 
