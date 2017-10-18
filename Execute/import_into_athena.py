@@ -28,12 +28,14 @@ with open("papers/papers.csv") as csvfile:
         row["authors"] = []
         dict[row['id']] = row
 
+authorranks = pd.read_csv("papers/AuthorPageRank.csv")
+
 authors = []
 
 with open("papers/new_authors.csv") as authorsfile:
     authorreader = csv.DictReader(authorsfile, delimiter=",", quotechar="\"")
     for row in authorreader:
-        author = {"id": row["id"], "name": row["name"]}
+        author = {"id": row["id"], "name": row["name"], "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0])}
         authors.append(author)
 
 put_request("http://localhost:5002/authors", json.dumps(authors).encode())

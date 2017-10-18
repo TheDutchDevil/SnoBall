@@ -38,19 +38,21 @@
     </div>
 
     <div class="col-md-7" id="abstract">
-        <div class="row">
-            <h3>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h3>
-        </div>
+        {% if paper.hasAbstract or paper.hasExtractedAbstract %}
+            <div class="row">
+                <h3>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h3>
+            </div>
+        {% endif %}
         <div class="row">
             {% if paper.hasAbstract %}
-            {{ paper.abstract }}
+                {{ paper.abstract }}
             {% elif paper.hasExtractedAbstract %}
-            {{ paper.gen_abstract }}
+                {{ paper.gen_abstract }}
             {% endif %}
         </div>
         <div class="row" style="margin-top: 10px;">
             <button type="button" class="btn btn-primary col-md-offset-2 col-md-4" data-toggle="modal"
-                    data-target="#paper-text-modal">View  paper text
+                    data-target="#paper-text-modal">View paper text
             </button>
         </div>
     </div>
@@ -62,7 +64,8 @@
         <div class="row" id="references">
             <ul class="list-group">
                 {% for ref in paper.references %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ref.title}}</a>  [{{ ref.year }}]</li>
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -71,9 +74,10 @@
         </div>
         <div class="row" id="referenced-by">
             <ul class="list-group">
-            {% for ref in paper.referencedby %}
-                <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ref.title}}</a>  [{{ ref.year }}]</li>
-            {% endfor %}
+                {% for ref in paper.referencedby %}
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
