@@ -100,8 +100,14 @@ class Papers(Resource):
             query = {"id": id}
             paper = self.conn.find_entry('SnoBall', 'papers', query)
 
-            paper["references"] = [{"id":10,"title":"Some blab blab","year":32,"rank":10}]
-            paper["referencedby"] = []
+            projection = {"id":1, "title":1, "rank":1, "year":1}
+
+            references_query = { "id": { "$in": paper["references"]}}
+            referencedby_query = {"id": { "$in" : paper["referencedby"]}}
+
+
+            paper["references"] = self.conn.find_entries('SnoBall', 'papers', references_query, projection)
+            paper["referencedby"] = self.conn.find_entries('SnoBall', 'papers', referencedby_query, projection)
 
             return jsonify({"result": paper})
         else:
