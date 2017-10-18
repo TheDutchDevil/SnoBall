@@ -26,6 +26,9 @@ def get_paper():
     paper["paper_text"] = paper["paper_text"].replace("\n\n", "<br/>")
     paper["paper_text"] = paper["paper_text"].replace("\n", "")
 
+    paper["hasAbstract"] = paper["abstract"] != "Abstract Missing"
+    paper["hasExtractedAbstract"] = paper["gen_abstract"] != ""
+
     return render_template("paper-details.html", paper = paper)
 
 @app.route('/paper/authors', methods = ['GET'])
