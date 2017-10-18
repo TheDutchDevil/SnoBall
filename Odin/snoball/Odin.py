@@ -21,8 +21,12 @@ def sendQuery():
 def get_paper():
     paper_id = request.args.get('id')
     payload = {'id': paper_id}
-    paper = requests.get('http://localhost:5002/papers', params=payload)
-    return render_template(paper)
+    paper = json.loads(requests.get('http://localhost:5002/papers', params=payload).text)["result"]
+
+    paper["paper_text"] = paper["paper_text"].replace("\n\n", "<br/>")
+    paper["paper_text"] = paper["paper_text"].replace("\n", "")
+
+    return render_template("paper-details.html", paper = paper)
 
 @app.route('/paper/authors', methods = ['GET'])
 def get_author():

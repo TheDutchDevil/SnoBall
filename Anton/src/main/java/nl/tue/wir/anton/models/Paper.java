@@ -7,7 +7,7 @@ public class Paper extends QueryResultParent {
     private String paperAbstract;
     private String gen_abstract;
     private String paperBody;
-    private List<String> authors;
+    private List<Author> authors;
     private int id;
 
     public String getTitle() {
@@ -34,7 +34,7 @@ public class Paper extends QueryResultParent {
         this.paperBody = paperBody;
     }
 
-    public List<String> getAuthors() {
+    public List<Author> getAuthors() {
         return authors;
     }
 
@@ -46,7 +46,7 @@ public class Paper extends QueryResultParent {
         this.id = id;
     }
 
-    public void setAuthors(List<String> authors) {
+    public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
 

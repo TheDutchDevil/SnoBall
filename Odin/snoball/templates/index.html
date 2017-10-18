@@ -47,7 +47,7 @@
                 <a href='/paper/details?id={{this.id}}'>{{this.title }}</a>
             </div>
             <div>
-                Written by: {{#each authors}} {{this}}{{#unless @last}},{{/unless}} {{/each}}
+                Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>{{#unless @last}},{{/unless}} {{/each}}
             </div>
         </div>
         {{/if }}

@@ -19,6 +19,14 @@ public class AntonIndexWriter {
 
     private final static Genson genson = new Genson();
 
+    public void deleteAll() throws IOException {
+        FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
+        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        org.apache.lucene.index.IndexWriter indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
+
+        indexWriter.deleteAll();
+    }
+
     public void indexPaper(Paper paper) {
 
         try {

@@ -1,5 +1,6 @@
 package nl.tue.wir.anton.documentstore;
 
+import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import nl.tue.wir.anton.models.Author;
 import nl.tue.wir.anton.models.Paper;
@@ -57,7 +58,8 @@ public class QueryAgent {
                 if(doc.get("type").equals("paper")) {
                     Paper paper = new Paper();
 
-                    paper.setAuthors(genson.deserialize(doc.get("authors"), List.class));
+                    paper.setAuthors(genson.deserialize(doc.get("authors"), new GenericType<List<Author>>() {
+                    }));
 
                     paper.setTitle(doc.get("title"));
                     paper.setId(Integer.parseInt(doc.get("id")));

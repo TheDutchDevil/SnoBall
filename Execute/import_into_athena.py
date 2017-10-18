@@ -50,7 +50,7 @@ genabstracts = pd.read_csv("papers/gen_abstracts.csv")
 genabstracts.columns = ['paper_id', 'gen_abstract']
 
 for row in merged.itertuples():
-    dict[str(row.paper_id)]['authors'].append(row.name)
+    dict[str(row.paper_id)]['authors'].append({"name":row.name, "id":row.author_id.item()})
 
 for gen_abstract in genabstracts.itertuples():
     if type(gen_abstract.gen_abstract) is float:
@@ -61,6 +61,8 @@ for gen_abstract in genabstracts.itertuples():
 papers = []
 
 for key, value in dict.items():
+    value["references"] = []
+    value["referencedby"] = []
     papers.append(value)
 
 print("Processed papers")
@@ -69,5 +71,14 @@ data = json.dumps(papers)
 put_request("http://localhost:5002/papers", data.encode())
 
 print("Imported papers")
+
+refs = []
+
+with open("papers/citation_graph.csv") as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=",", quotechar="\"")
+    for row in reader:
+        refs.append({"Source": row["Source"], "Target": row["Target"]})
+
+put_request("http://localhost:5002/references", json.dumps(refs).encode())
 
 
