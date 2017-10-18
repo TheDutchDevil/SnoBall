@@ -62,8 +62,9 @@ class Authors(Resource):
     def get(self):
         id = request.args.get('id')
         if id:
-            query_string = "['id':{0}".format(id)
-            return jsonify({"result":self.conn.find_entry('SnoBall', 'authors', query_string)})
+            query = {"id": id}
+            author = self.conn.find_entry('SnoBall', 'authors', query)
+            return jsonify({"result": author})
         else:
             return jsonify({"result": self.conn.get_all_entries('SnoBall', 'authors')})
 
@@ -107,5 +108,4 @@ api.add_resource(Papers, '/papers')
 api.add_resource(References, '/references')
 
 if __name__ == '__main__':
-
     app.run(port='5002')
