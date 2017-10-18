@@ -30,9 +30,7 @@ sub = ["References", "Rererences", "Referenes", "Reference",
        "REFERENCE", "Referenees", "Referen", "Bibliography", "Refereaces",
        "Literature cited", "Ref erences", "BIBLIOGRAPHY", "Refe ren ces", 
        "Ref eren ces", "R e f er e n ce s", "R e f e re n c e s", "R e fer e nces",
-       "R ef erence s", "Refrences", "Iteferences",
-       "Refel~ences" 
-       ]
+       "R ef erence s", "Refrences", "Iteferences", "Refel~ences" ]
 
 def find_sub(splits, sub):
   indexlist = []
@@ -233,7 +231,10 @@ with open('citations-titles.json', 'w') as fp:
 #%%
 """"
 APPROACH
-1. Identify the bibliography section using wildcard like regular expression
+1. Identify the bibliography section; to generalize: could use 
+    * wildcard regex expression, 
+    * levenshtein distance (need to compute for each word?)
+    * k-gram index; but we want precise place so maybe not so useful
 2. Extract titles from references: heuristic
 3. Find dblp entry based on title from parsed paper: API
 4. Match dblp entries with NIPS database entries: Levenshtein distance

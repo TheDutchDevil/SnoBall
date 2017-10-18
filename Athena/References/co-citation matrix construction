@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 16 14:18:20 2017
+
+@author: hildeweerts
+"""
+#%%
+import os
+import pandas as pd
+
+working_dir = '/Users/hildeweerts/SnoBall/Athena/References/'
+os.chdir(working_dir)
+
+cocitation = pd.read_csv("co-citation_graph.csv")
+
+#%%
+import numpy as np
+
+nrpapers = 6560
+
+index = range(0, nrpapers)
+columns = range(0, nrpapers)
+
+cocitation_matrix = pd.DataFrame(index=index, columns=columns)
+cocitation_matrix = cocitation_matrix.fillna(0) # with 0s rather than NaNs
+
+
+for i in cocitation.iterrows():
+    source = i[1]['Source']
+    target = i[1]['Target']
+    current = cocitation_matrix.iat[source, target]
+    cocitation_matrix.at[source, target] = current + 1
+    cocitation_matrix.at[target, source] = current + 1
+#%%
+print(cocitation_matrix.values.max())
+#%%
+cocitation_matrix.to_csv("cocitation_matrix.csv")
