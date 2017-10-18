@@ -27,7 +27,7 @@
         </div>
         <div class="row" id="authors">
             {% for author in paper.authors %}
-                <a href="../{{ author.id }}" style="padding-right: 5px;" class="author-link">
+                <a href="../author/details?id={{ author.id }}" style="padding-right: 5px;" class="author-link">
                     {{ author.name }}{{ "," if not loop.last }}</a>
             {% endfor %}
         </div>

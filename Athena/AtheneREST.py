@@ -64,6 +64,11 @@ class Authors(Resource):
         if id:
             query = {"id": id}
             author = self.conn.find_entry('SnoBall', 'authors', query)
+
+            paper_query = {"authors": {"$elemMatch": {"id":1249}}}
+            papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
+
+            author['papers'] = papers
             return jsonify({"result": author})
         else:
             return jsonify({"result": self.conn.get_all_entries('SnoBall', 'authors')})
