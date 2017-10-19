@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {{ author.name }} </title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/main.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>{{ author.name }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel panel-heading">
+                        Topics:
+                    </div>
+                    <div class="panel panel-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel panel-heading">
+                        Papers written by this author:
+                    </div>
+                    <div class="panel panel-body">
+                        {% for pap in author.papers %}
+                            <li class="list-group-item"><a href="../paper/details?id={{pap.id}}">{{pap.title}}</a></li>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="panel panel-default col-md-6">
+                    <div class="panel panel-heading">
+                        Related authors:
+                    </div>
+                    <div class="panel panel-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

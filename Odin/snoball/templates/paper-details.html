@@ -7,6 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
             integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
             crossorigin="anonymous"></script>
@@ -28,7 +29,7 @@
         </div>
         <div class="row" id="authors">
             {% for author in paper.authors %}
-                <a href="../{{ author.id }}" style="padding-right: 5px;" class="author-link">
+                <a href="../author/details?id={{ author.id }}" style="padding-right: 5px;" class="author-link">
                     {{ author.name }}{{ "," if not loop.last }}</a>
             {% endfor %}
         </div>
@@ -38,15 +39,21 @@
     </div>
 
     <div class="col-md-7" id="abstract">
+        {% if paper.hasAbstract or paper.hasExtractedAbstract %}
+            <div class="row">
+                <h3>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h3>
+            </div>
+        {% endif %}
         <div class="row">
-            <h3>Abstract</h3>
-        </div>
-        <div class="row">
-            {{ paper.abstract }}
+            {% if paper.hasAbstract %}
+                {{ paper.abstract }}
+            {% elif paper.hasExtractedAbstract %}
+                {{ paper.gen_abstract }}
+            {% endif %}
         </div>
         <div class="row" style="margin-top: 10px;">
-            <button type="button" class="btn btn-primary col-md-offset-2 col-md-2" data-toggle="modal"
-                    data-target="#paper-text-modal">Paper text
+            <button type="button" class="btn btn-primary col-md-offset-2 col-md-4" data-toggle="modal"
+                    data-target="#paper-text-modal">View paper text
             </button>
         </div>
     </div>
@@ -58,7 +65,8 @@
         <div class="row" id="references">
             <ul class="list-group">
                 {% for ref in paper.references %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ref.title}}</a>  [{{ ref.year }}]</li>
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -66,9 +74,12 @@
             <h4>Referenced by</h4>
         </div>
         <div class="row" id="referenced-by">
-            {% for ref in paper.referencedby %}
-
-            {% endfor %}
+            <ul class="list-group">
+                {% for ref in paper.referencedby %}
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     <footer class="footer">

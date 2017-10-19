@@ -26,13 +26,17 @@ def get_paper():
     paper["paper_text"] = paper["paper_text"].replace("\n\n", "<br/>")
     paper["paper_text"] = paper["paper_text"].replace("\n", "")
 
+    paper["hasAbstract"] = paper["abstract"] != "Abstract Missing"
+    paper["hasExtractedAbstract"] = paper["gen_abstract"] != ""
+
     return render_template("paper-details.html", paper = paper)
 
-@app.route('/paper/authors', methods = ['GET'])
+@app.route('/author/details', methods = ['GET'])
 def get_author():
     author_id = request.args.get('id')
     payload = {'id': author_id}
-    return "ToDo"
+    author = json.loads(requests.get('http://localhost:5002/authors', params=payload).text)["result"]
+    return render_template("author-details.html", author = author)
 
 if __name__ == "__main__":
     app.run()
