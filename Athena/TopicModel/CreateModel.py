@@ -98,7 +98,6 @@ for year in range(firstyear,lastyear+1):
 
 topics['occurence_yearly'] = topics['occurence_yearly'].astype(object)
 for i, topic in topics.iterrows():
-#    topics.set_value(i,'occurence_yearly', yearlist)
     topics.loc[i,'occurence_yearly'] = yearlist[:]
 
 #%%
@@ -118,3 +117,30 @@ for i, paper in paperid_topic.iterrows():
         topics.set_value(topicnum,'occurence_yearly', occurence_yearly)
 #%% Save data to csv
 topics.to_csv('topics.csv')
+
+#%% open new authors and new authors papers
+new_paper_authors = pd.read_csv('new_paper_authors.csv', engine='python')
+
+#%% create index
+paperid_topic = paperid_topic.set_index('id')
+#%% concat dataframes
+paper_authors_topics = new_paper_authors.join(paperid_topic, on=['paper_id'], how='inner')
+#%% open csv of authors
+new_authors = pd.read_csv('new_authors.csv', engine='python')
+new_authors = new_authors.drop('name', 1)
+new_authors["topics"] = ''
+#%% count topics
+from collections import Counter
+
+for index, author in new_authors.iterrows():
+    topics = []
+#    print(author[0])
+    for i, paper in paper_authors_topics.iterrows():
+        if paper[1] == author[0]:
+            for topic in paper[2]:
+                topics.append(topic[0])
+    distinct = Counter(topics)
+    distinct = distinct.most_common()
+    new_authors.set_value(index,'topics',distinct)
+#%% Save data to csv
+new_authors.to_csv('authortopic.csv')
