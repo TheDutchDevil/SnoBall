@@ -3,38 +3,39 @@
 
 <head>
     <title>Snoball</title>
-
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/main.css">
 </head>
 
 <body>
-
-    <div class="container">
+    <div class="container-fluid">
         <div class="header">
-            <h3 class="text-muted">SnoBall</h3>
+            <h2>SnoBall</h2>
+            <h3>Your guide in machine learning research.</h3>
         </div>
-
-        <div class="col-md-12">
-            <input class="col-md-9" id="query_input" placeholder="Type query here and start snoballing.">
-            <button class="button col-md-2" onclick="sendQuery()">SnoBall</button>
+        <div class="col-md-12" align = "center">
+            <input class="col-md-4" id="query_input" placeholder="Type your query and start SnoBalling.">
+            <button class="button col-md-1" onclick="sendQuery()"> Go!</button>
         </div>
-
-        <div class="col-md-10" id="result_paper">
-
+        <div class = "row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8 col-md-offset-2" id="result_paper">
+            </div>
+            <div class="col-md-2">
+            </div>
         </div>
-        <footer class="footer">
-            <p>&copy; Groep-6</p>
-        </footer>
-
     </div>
+    <footer class = "footer">
+        <div class ="col-md-10 col-md-offset-1">
+            <p>&copy; Groep-6</p>
+        </div>
+    </footer>
     <script src="static/libs/jquery-3.2.1.min.js"></script>
     <script src="static/handlebars.min-latest.js"></script>
     <script src="static/index.js"></script>
 {% raw %}
 <script id="results-template" type="text/x-handlebars-template">
-
         {{#each this}}
         {{#if this.isAuthor }}
         <div class="result-entry">
