@@ -1,0 +1,39 @@
+0 Algorithms
+1 Deep learning
+2 Clustering and ranking
+3 Speech recognition, recognizing hand-written letters, word identification, phonetic modelling
+	Human-Technology Interaction
+	Human communication perception
+    Speech and natural language processing
+  Speech and letter recognition
+4 	Bayesian models
+5 Reinforcement learning / Machine learning
+6 	Harmonic, grammar, neural networks
+7
+8 Optimization / algorithms / online learning
+	Algorithms and optimization
+  Online learning and optimization
+9
+
+20 topics
+0 Brain-computer interfaces
+1 Boosting
+2
+3 Probabilistic methods
+4
+5 Metric learning
+6 Bandit problems
+7 Motor control
+8 
+9 Visual applications
+10 Components Analysis and Sparsity
+11 
+12 
+13 neural networks
+14 Speech and letter recognition
+15 Lifter inference models
+16 Dimensionality reduction and manifold learning
+17 Motion and tracking
+18 deep learning
+19 gaussian processes
+

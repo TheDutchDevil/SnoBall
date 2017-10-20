@@ -1,5 +1,6 @@
 *************PageRank.csv*****************************
 ID
+Pagerank score
 Overall PageRank rank / auteur
 
 *************pageRankOverallAndTopics.csv*************
@@ -13,8 +14,11 @@ PageRank rank/topic/auteur
 	hebben. Hierdoor krijgen deze auteurs een superlage score (maar dus wel een score hoger dan 0)
 	Dus een auteur heeft op ieder topic een score en dus een rank.
 
+De topics die niet gebruikt worden, zijn eruit gehaald
+
 *************PaperPageRank.csv***********************
 ID
 Overall PageRank score
 		Bepaald door het gemiddelde te nemen over alle auteurs die hebben samengewerkt aan die paper
+PageRank rank
 		
