@@ -5,6 +5,7 @@ import com.owlike.genson.Genson;
 import nl.tue.wir.anton.models.Author;
 import nl.tue.wir.anton.models.Paper;
 import nl.tue.wir.anton.models.SimpleQueryResult;
+import nl.tue.wir.anton.models.Topic;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -40,7 +41,7 @@ public class QueryAgent {
             IndexReader reader = DirectoryReader.open(indexWriter);
             IndexSearcher searcher = new IndexSearcher(reader);
 
-            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name", "alternativeNames", "gen_abstract"}, analyzer).parse(query);
+            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name", "alternativeNames", "gen_abstract", "keyword"}, analyzer).parse(query);
 
             TotalHitCountCollector counter = new TotalHitCountCollector();
 
@@ -72,6 +73,16 @@ public class QueryAgent {
                     author.setId(Integer.parseInt(doc.get("id")));
 
                     results.add(author);
+                } else if(doc.get("type").equals("topic")) {
+                    Topic topic = new Topic();
+
+                    topic.setId(Integer.parseInt(doc.get("id")));
+                    topic.setName(doc.get("name"));
+
+                    topic.setKeywords(genson.deserialize(doc.get("keywordList"), new GenericType<List<String>>() {
+                    }));
+
+                    results.add(topic);
                 }
             }
 

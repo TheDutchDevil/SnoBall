@@ -3,6 +3,7 @@ package nl.tue.wir.anton.documentstore;
 import com.owlike.genson.Genson;
 import nl.tue.wir.anton.models.Author;
 import nl.tue.wir.anton.models.Paper;
+import nl.tue.wir.anton.models.Topic;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -87,6 +88,32 @@ public class AntonIndexWriter {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void indexTopic(Topic topic) {
+        try {
+            FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
+            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+            org.apache.lucene.index.IndexWriter indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
+
+            Document doc = new Document();
+
+            doc.add(new TextField("name", topic.getName(), Field.Store.YES));
+
+            for(String keyword : topic.getKeywords()) {
+                doc.add(new TextField("keyword", keyword, Field.Store.NO));
+            }
+            doc.add(new StoredField("id", topic.getId()));
+            doc.add(new StoredField("type", "topic"));
+            doc.add(new StoredField("keywordList", genson.serialize(topic.getKeywords())));
+
+            indexWriter.addDocument(doc);
+
+            indexWriter.close();
+        }
+        catch(IOException ex) {
+            ex.printStackTrace();
         }
     }
 

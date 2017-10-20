@@ -20,6 +20,27 @@ api = Api(app)
 app.json_encoder = CustomJSONEncoder
 
 
+class Topics(Resource):
+    def __init__(self):
+        self.conn = MongoDbConnector('mongodb://localhost:27017')
+
+    def put(self):
+        topics = request.json
+
+        self.conn.insert_entries('SnoBall', 'topics', topics)
+
+    def get(self):
+        id = request.args.get('id')
+
+        if id:
+            query = {"id": id}
+            topic  = self.conn.find_entry('SnoBall', 'topics', query)
+
+            return jsonify({"topic": topic})
+        else:
+            return jsonify({"result": self.conn.get_all_entries('SnoBall', 'topics')})
+
+
 class References(Resource):
     def __init__(self):
         self.conn = MongoDbConnector('mongodb://localhost:27017')
@@ -117,6 +138,7 @@ class Papers(Resource):
 api.add_resource(Authors, '/authors')
 api.add_resource(Papers, '/papers')
 api.add_resource(References, '/references')
+api.add_resource(Topics, '/topics')
 
 if __name__ == '__main__':
     app.run(port='5002')
