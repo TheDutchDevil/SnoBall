@@ -20,12 +20,19 @@
 
     <link rel="stylesheet" type="text/css" href="../static/main.css">
 </head>
-<body>
-<div class="container">
 
-    <div class="col-md-12" id="paper-info-field" style="margin-bottom: 20px;">
+<body>
+<div class = "container-fluid">
+	<div class = "page-header">
+		<div class="row">
+				<a href ="http://localhost:5000/"><h5>SnoBall</h5></a>
+		</div>
+	</div>
+</div>
+<div class="container">
+    <div class="col-md-12" id="paper-info-field" style="margin-bottom: 20px; margin-top: 20px;">
         <div class="row">
-            <h2>{{ paper.title }}, {{ paper.year }}</h2>
+            <h4>{{ paper.title }}, {{ paper.year }}</h4>
         </div>
         <div class="row" id="authors">
             {% for author in paper.authors %}
@@ -41,7 +48,7 @@
     <div class="col-md-7" id="abstract">
         {% if paper.hasAbstract or paper.hasExtractedAbstract %}
             <div class="row">
-                <h3>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h3>
+                <h6>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h6>
             </div>
         {% endif %}
         <div class="row">
@@ -52,15 +59,15 @@
             {% endif %}
         </div>
         <div class="row" style="margin-top: 10px;">
-            <button type="button" class="btn btn-primary col-md-offset-2 col-md-4" data-toggle="modal"
-                    data-target="#paper-text-modal">View paper text
+            <button class = "button" type="button" class="btn btn-primary col-md-offset-2 col-md-4" data-toggle="modal"
+                    data-target="#paper-text-modal">View paper
             </button>
         </div>
     </div>
 
     <div class="col-md-7" style="margin-top: 20px;">
         <div class="row">
-            <h4>References</h4>
+            <h6>References</h6>
         </div>
         <div class="row" id="references">
             <ul class="list-group">
@@ -71,7 +78,7 @@
             </ul>
         </div>
         <div class="row">
-            <h4>Referenced by</h4>
+            <h6>Referenced by</h6>
         </div>
         <div class="row" id="referenced-by">
             <ul class="list-group">
