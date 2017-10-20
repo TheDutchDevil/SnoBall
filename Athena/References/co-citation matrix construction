@@ -17,10 +17,10 @@ cocitation = pd.read_csv("co-citation_graph.csv")
 #%%
 import numpy as np
 
-nrpapers = 6560
+nrpapers = 6561
 
-index = range(0, nrpapers)
-columns = range(0, nrpapers)
+index = range(1, nrpapers + 1)
+columns = range(1, nrpapers + 1)
 
 cocitation_matrix = pd.DataFrame(index=index, columns=columns)
 cocitation_matrix = cocitation_matrix.fillna(0) # with 0s rather than NaNs
