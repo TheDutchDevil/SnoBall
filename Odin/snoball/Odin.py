@@ -38,6 +38,13 @@ def get_author():
     author = json.loads(requests.get('http://localhost:5002/authors', params=payload).text)["result"]
     return render_template("author-details.html", author = author)
 
+@app.route('/topic/details', methods=['GET'])
+def get_topic():
+    topicid = request.args.get('id')
+    payload = {'id': topicid}
+    topic = json.loads(requests.get('http://localhost:5002/topics', params=payload).text)
+    return render_template("topic-details.html", topic = topic)
+
 if __name__ == "__main__":
     app.run()
 

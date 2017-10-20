@@ -75,7 +75,8 @@ authors = []
 with open("papers/new_authors.csv") as authorsfile:
     authorreader = csv.DictReader(authorsfile, delimiter=",", quotechar="\"")
     for row in authorreader:
-        author = {"id": row["id"], "name": row["name"], "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0])}
+        author = {"id": row["id"], "name": row["name"], "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
+                  "score": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0])}
         authors.append(author)
 
 put_request("http://localhost:5002/authors", json.dumps(authors).encode())
@@ -101,6 +102,13 @@ for gen_abstract in genabstracts.itertuples():
         dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
 
 
+paperpageranks = {}
+
+with open("papers/PaperPageRank.csv") as paperpagerankfile:
+    paperpagerankreader = csv.DictReader(paperpagerankfile)
+
+    for row in paperpagerankreader:
+        paperpageranks[row["id"]] = row
 
 papers = []
 
@@ -109,6 +117,8 @@ for key, value in dict.items():
     value["referencedby"] = []
 
     value["topics"] = papertopic[value["id"]]
+
+    value["rank"] = paperpageranks[row["id"]]["PageRankRank"]
 
     papers.append(value)
 

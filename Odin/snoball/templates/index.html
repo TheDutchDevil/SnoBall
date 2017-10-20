@@ -8,55 +8,59 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="header">
-            <h2>SnoBall</h2>
-            <h3>Your guide in machine learning research.</h3>
+<div class="container-fluid">
+    <div class="header">
+        <h2>SnoBall</h2>
+        <h3>Your guide in machine learning research.</h3>
+    </div>
+    <div class="col-md-12" align="center">
+        <input class="col-md-4" id="query_input" placeholder="Type your query and start SnoBalling.">
+        <button class="button col-md-1" onclick="sendQuery()"> Go!</button>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
         </div>
-        <div class="col-md-12" align = "center">
-            <input class="col-md-4" id="query_input" placeholder="Type your query and start SnoBalling.">
-            <button class="button col-md-1" onclick="sendQuery()"> Go!</button>
+        <div class="col-md-8 col-md-offset-2" id="result_paper">
         </div>
-        <div class = "row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8 col-md-offset-2" id="result_paper">
-            </div>
-            <div class="col-md-2">
-            </div>
+        <div class="col-md-2">
         </div>
     </div>
-    <footer class = "footer">
-        <div class ="col-md-10 col-md-offset-1">
-            <p>&copy; Groep-6</p>
-        </div>
-    </footer>
-    <script src="static/libs/jquery-3.2.1.min.js"></script>
-    <script src="static/handlebars.min-latest.js"></script>
-    <script src="static/index.js"></script>
+</div>
+<footer class="footer">
+    <div class="col-md-10 col-md-offset-1">
+        <p>&copy; Groep-6</p>
+    </div>
+</footer>
+<script src="static/libs/jquery-3.2.1.min.js"></script>
+<script src="static/handlebars.min-latest.js"></script>
+<script src="static/index.js"></script>
 {% raw %}
 <script id="results-template" type="text/x-handlebars-template">
-        {{#each this}}
-        {{#if this.isAuthor }}
-        <div class="result-entry">
-            <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a>
+    {{#each this}}
+    {{#if this.isAuthor }}
+    <div class="result-entry">
+        <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a>
+    </div>
+    {{/if }}
+    {{#if this.isPaper }}
+    <div class="result-entry">
+        <div>
+            <a href='/paper/details?id={{this.id}}'>{{this.title }}</a>
         </div>
-        {{/if }}
-                {{#if this.isPaper }}
-        <div class="result-entry">
-            <div>
-                <a href='/paper/details?id={{this.id}}'>{{this.title }}</a>
-            </div>
-            <div>
-                Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>{{#unless @last}},{{/unless}} {{/each}}
-            </div>
+        <div>
+            Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>{{#unless
+            @last}},{{/unless}} {{/each}}
         </div>
-        {{/if }}
-        {{/each }}
+    </div>
+    {{/if }}
+    {{#if this.isTopic}}
+    <div class="result-entry">
+        Topic: <a href="/topic/details?id={{this.id}}" class="topic-link">{{this.name}}</a>
+    </div>
+    {{/if}}
+    {{/each }}
 </script>
-
 {% endraw %}
-
 </body>
 
 </html>

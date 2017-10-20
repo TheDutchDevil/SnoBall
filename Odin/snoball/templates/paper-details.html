@@ -41,7 +41,11 @@
             {% endfor %}
         </div>
         <div class="row" id="topics">
-
+            {% for topic in paper.topics %}
+                <a href="../topic/details?id={{topic.id}}" style="padding-right: 5px;" class="topic-link">
+                    {{ topic.name }}{{ "," if not loop.last }}
+                </a>
+            {% endfor %}
         </div>
     </div>
 

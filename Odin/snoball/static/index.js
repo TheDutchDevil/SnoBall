@@ -21,6 +21,8 @@ function sendQuery()
                     item.isPaper = true;
                 } else if (item.type === "author") {
                     item.isAuthor = true;
+                } else if(item.type === "topic") {
+                    item.isTopic = true;
                 }
 
 
