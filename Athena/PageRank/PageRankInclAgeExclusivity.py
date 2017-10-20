@@ -46,8 +46,6 @@ def topicPageRank(topicNum, authorLst, paperAuthorDf, firstYear, lastYear):
     return pageRank(authorList, paperAuthorDfTopic, firstYear, lastYear)
 
 
-
-#%%
 """ set working directory such that the updated author and author_paper table are retrieved"""
 working_dir = r'C:\Users\s134277\Documents\GitHub\SnoBall\Execute\Papers\ '
 os.chdir(working_dir)
@@ -75,11 +73,11 @@ authors['PageRankScore'] = pageRank(authorList, paperAuthorDf, 1987, 2016)
 
 #%% 
 " PAGERANK VOOR TOPICS"
-paperTopic = pd.DataFrame.from_csv(r'C:\Users\s134277\Documents\GitHub\SnoBall\Athena\TopicModel\paperid_topic.csv')
+paperTopic = pd.DataFrame.from_csv(r'C:\Users\s134277\Documents\GitHub\SnoBall\Athena\TopicModel\paperid_topic_20 topics.csv')
 
 " Create a list with an empty list for each topic "
 topicList = []
-num_topics = 10
+num_topics = 20
 for i in range(num_topics):
     topicList.append([])    
         
@@ -109,17 +107,25 @@ for i in range(num_topics):
 
 authors = authors.sort_values(by = 'PageRankScore', ascending = False)
 
-
+#%%
 """ save to file """
 working_dir = r'C:\Users\s134277\Documents\GitHub\SnoBall\Athena\PageRank\ '
 os.chdir(working_dir)
-overallPageRank = authors[['id', 'PageRankRank']]
+overallPageRank = authors[['id', 'PageRankScore','PageRankRank']]
 overallPageRank.to_csv('PageRank.csv', index = False)
 
-pageRankOverallAndTopics = authors[['id', 'PageRankRank', 'T0PRRank', 
-                                    'T1PRRank', 'T2PRRank', 'T3PRRank', 
-                                    'T4PRRank', 'T5PRRank', 'T6PRRank', 
-                                    'T7PRRank', 'T8PRRank', 'T9PRRank']]
+topicRankList = []
+topicScoreList = []
+for i in range(num_topics):
+    if i not in (2, 4, 8, 11, 12):
+        stringScore = "T"+str(i)+"PRScore"
+        stringRank = "T"+str(i)+"PRRank"
+        topicRankList.append(stringRank)
+        topicScoreList.append(stringScore)
+columnList = ['id', 'PageRankScore'] + topicScoreList + ['PageRankRank'] + topicRankList
+
+pageRankOverallAndTopics = authors[columnList] 
+
 pageRankOverallAndTopics.to_csv('PageRankOverallAndTopics.csv', index = False)
 
 #%%
@@ -138,4 +144,9 @@ for paperNum in unique_papers:
     
 """ save to file """   
 paperPageRankDf = pd.DataFrame(paperPageRankLst, columns=['paper_id', 'pagerank'])
+
+paperPageRankDf = paperPageRankDf.sort_values(by = 'pagerank', ascending = False)
+paperPageRankDf['pagerankrank'] = list(range(1,len(paperPageRankDf)+1))
+
+
 paperPageRankDf.to_csv('PaperPageRank.csv', index = False)
