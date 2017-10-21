@@ -15,12 +15,13 @@ os.chdir(working_dir)
 cocitation = pd.read_csv("co-citation_graph.csv")
 
 #%%
+""" as pandas dataframe """
 import numpy as np
 
-nrpapers = 6561
+nrpapers = 6560
 
-index = range(1, nrpapers + 1)
-columns = range(1, nrpapers + 1)
+index = range(0, nrpapers)
+columns = range(0, nrpapers)
 
 cocitation_matrix = pd.DataFrame(index=index, columns=columns)
 cocitation_matrix = cocitation_matrix.fillna(0) # with 0s rather than NaNs
@@ -33,6 +34,18 @@ for i in cocitation.iterrows():
     cocitation_matrix.at[source, target] = current + 1
     cocitation_matrix.at[target, source] = current + 1
 #%%
-print(cocitation_matrix.values.max())
-#%%
 cocitation_matrix.to_csv("cocitation_matrix.csv")
+
+#%%
+""" as numpy matrix """
+import numpy as np 
+nrpapers = 6561
+
+cocitation_matrix = np.zeros((nrpapers, nrpapers))
+
+for i in cocitation.iterrows():
+    source = i[1]['Source']
+    target = i[1]['Target']
+    current = cocitation_matrix[source, target]
+    cocitation_matrix[source, target] = current + 1
+    cocitation_matrix[target, source] = current + 1
