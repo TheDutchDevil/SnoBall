@@ -2,6 +2,7 @@ import csv
 import urllib.request
 import json
 import pandas as pd
+import numpy as np
 import math
 import ast
 
@@ -20,6 +21,10 @@ def put_request(url, data):
     request = RequestWithMethod(url, method='PUT', data=data, headers={'Content-Type': 'application/json'})
     return opener.open(request)
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for parti in range(0, len(l), n):
+        yield l[parti:parti + n]
 
 topics = {}
 
@@ -60,6 +65,7 @@ with open("papers/paperid_topic.csv") as topicpaperfile:
 
 print("Imported topics")
 
+
 dict = {}
 
 with open("papers/papers.csv") as csvfile:
@@ -77,7 +83,8 @@ with open("papers/new_authors.csv") as authorsfile:
     for row in authorreader:
         author = {"id": row["id"], "name": row["name"],
                   "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
-                  "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0])}
+                  "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0]),
+                  "articles": row["numArticles"], "minyear": row["minYear"], "maxyear": row["maxYear"]}
         authors.append(author)
 
 put_request("http://localhost:5002/authors", json.dumps(authors).encode())
@@ -86,7 +93,7 @@ print("Imported authors")
 
 a = pd.read_csv("papers/new_paper_authors.csv")
 b = pd.read_csv("papers/new_authors.csv")
-b.columns = ['author_id', 'name']
+b.columns = ['author_id', 'name', "articles", "minyear", "maxyear"]
 b = b.dropna(axis=1)
 merged = a.merge(b, on='author_id')
 
@@ -94,13 +101,65 @@ genabstracts = pd.read_csv("papers/gen_abstracts.csv")
 genabstracts.columns = ['paper_id', 'gen_abstract']
 
 for row in merged.itertuples():
-    dict[str(row.paper_id)]['authors'].append({"name": row.name, "id": row.author_id.item()})
+    dict[str(row.paper_id)]['authors'].append({"name":row.name, "id":row.author_id.item()})
 
 for gen_abstract in genabstracts.itertuples():
     if type(gen_abstract.gen_abstract) is float:
         dict[str(gen_abstract.paper_id)]['gen_abstract'] = ""
     else:
         dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
+
+papers = {}
+ids = []
+processed_papers = []
+for key, value in dict.items():
+    value["references"] = []
+    value["referencedby"] = []
+    value["relpapers"] = []
+    papers[value['id']] = value
+    ids.append(int(value['id']))
+
+print("Processed papers")
+
+a = pd.read_csv("papers/id_cluster_hierarchical40.csv")
+grouped = a.groupby(['cluster'])
+
+#Generate all possible combinations with regards to clusters
+combinations = []
+j = 0
+
+done_clusters = 0
+
+for name, group in grouped:
+    if done_clusters == 100:
+        print("Cluster {0}".format(name))
+        done_clusters = 0
+    paper_ids = (list(group['id']))
+    for id1 in paper_ids:
+        for id2 in paper_ids:
+            if id1 != id2:
+                entry = [id1, id2]
+                combinations.append(entry)
+
+    done_clusters = done_clusters + 1
+
+#For each combination save cosine sim, title and author
+d = np.load('papers/cosine_similarity.npy')
+i = 0
+for tuple in combinations:
+    if i % 10000 == 0:
+        print("{0} of {1}".format(i, len(combinations)))
+    paper_one = papers[str(tuple[0])]
+    paper_two = papers[str(tuple[1])]
+    cosim = d[ids.index(tuple[0])][ids.index(tuple[1])].item()
+    entry = {}
+    entry['id'] = int(tuple[1])
+    entry['sim'] = cosim
+    entry['title'] = paper_two['title']
+    entry['authors'] = paper_two['authors']
+    entry['year'] = paper_two['year']
+    paper_one['relpapers'].append(entry)
+    i+=1
 
 paperpageranks = {}
 
@@ -110,10 +169,11 @@ with open("papers/PaperPageRank.csv") as paperpagerankfile:
     for row in paperpagerankreader:
         paperpageranks[row["paper_id"]] = row
 
-papers = []
 
-for key, value in dict.items():
-
+#sort on cosime sim
+for key, value in papers.items():
+    sorted_list = sorted(value['relpapers'], key=lambda k: k['sim'], reverse=True)
+    value['relpapers'] = sorted_list
     value["references"] = []
     value["referencedby"] = []
 
@@ -126,19 +186,21 @@ for key, value in dict.items():
     else:
         value["topics"] = []
 
-    value["rank"] = 3 #paperpageranks[value["id"]]["pagerankrank"]
-    value["score"] = 0.4 # float(paperpageranks[value["id"]]["pagerank"])
+    value["rank"] = 3  # paperpageranks[value["id"]]["pagerankrank"]
+    value["score"] = 0.4  # float(paperpageranks[value["id"]]["pagerank"])
 
     # for topic in value["topics"]:
     #   topic["rank"] = paperpageranks[value["id"]]["T" + topic["id"] + "PRRank"]
     #   topic["score"] = float(paperpageranks[value["id"]]["T" + topic["id"] + "PRScore"])
 
-    papers.append(value)
+papers_to_send = list(papers.items())
 
-print("Processed papers")
+papers = {}
 
-data = json.dumps(papers)
-put_request("http://localhost:5002/papers", data.encode())
+for subset in chunks(papers_to_send, 1000):
+    put_request("http://localhost:5002/papers", json.dumps(list([x[1] for x in subset])).encode())
+
+
 
 print("Imported papers")
 
