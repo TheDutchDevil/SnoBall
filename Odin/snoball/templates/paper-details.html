@@ -65,7 +65,9 @@
         </div>
     </div>
 
-    <div class="col-md-7" style="margin-top: 20px;">
+
+    <div class="col-md-12" style="margin-top: 20px;">
+
         <div class="row">
             <h6>References</h6>
         </div>
@@ -84,6 +86,25 @@
             <ul class="list-group">
                 {% for ref in paper.referencedby %}
                     <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="row">
+            <h6>Related papers</h6>
+        </div>
+        <div class="row" id="related">
+            <ul class="list-group">
+                {% for p in paper.relpapers %}
+                    <li class="list-group-item">
+                        <div>
+                            <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}], [{{p.sim}}]
+                        </div>
+                        <div>
+                            {% for a in p.authors %}
+                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
+                            {% endfor %}
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
