@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 @Path("/topics")
@@ -21,20 +22,21 @@ public class Topics {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public static String putPapers(List<Topic> topics) {
-        AntonIndexWriter writer = new AntonIndexWriter();
+    public static String putPapers(List<Topic> topics) throws IOException {
+        try(AntonIndexWriter writer = new AntonIndexWriter()) {
 
-        for(Topic topic : topics) {
-            if(topic.getName() == null ) {
-                return genson.serialize(RequestResult.failedResult("no name"));
+            for (Topic topic : topics) {
+                if (topic.getName() == null) {
+                    return genson.serialize(RequestResult.failedResult("no name"));
+                }
+                if (topic.getKeywords() == null) {
+                    return genson.serialize(RequestResult.failedResult("no keywords"));
+                }
+
+                System.out.println("Indexing: " + topic.getName());
+
+                writer.indexTopic(topic);
             }
-            if(topic.getKeywords() == null) {
-                return genson.serialize(RequestResult.failedResult("no keywords"));
-            }
-
-            System.out.println("Indexing: " + topic.getName());
-
-            writer.indexTopic(topic);
         }
 
         return genson.serialize(RequestResult.succeededResult());

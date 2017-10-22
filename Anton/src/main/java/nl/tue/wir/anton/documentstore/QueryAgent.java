@@ -41,7 +41,8 @@ public class QueryAgent {
             IndexReader reader = DirectoryReader.open(indexWriter);
             IndexSearcher searcher = new IndexSearcher(reader);
 
-            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name", "alternativeNames", "gen_abstract", "keyword"}, analyzer).parse(query);
+            Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name",
+                    "alternativeNames", "gen_abstract", "keyword", "score", "year", "rank"}, analyzer).parse(query);
 
             TotalHitCountCollector counter = new TotalHitCountCollector();
 
@@ -64,6 +65,8 @@ public class QueryAgent {
 
                     paper.setTitle(doc.get("title"));
                     paper.setId(Integer.parseInt(doc.get("id")));
+                    paper.setYear(Integer.parseInt(doc.get("year")));
+                    paper.setRank(Integer.parseInt(doc.get("rank")));
 
                     results.add(paper);
                 } else if(doc.get("type").equals("author")) {
@@ -71,6 +74,8 @@ public class QueryAgent {
 
                     author.setName(doc.get("name"));
                     author.setId(Integer.parseInt(doc.get("id")));
+
+                    author.setRank(Integer.parseInt(doc.get("rank")));
 
                     results.add(author);
                 } else if(doc.get("type").equals("topic")) {

@@ -11,6 +11,8 @@ public class Delete {
 
     @DELETE
     public void deleteAll() throws IOException {
-        new AntonIndexWriter().deleteAll();
+        try(AntonIndexWriter writ = new AntonIndexWriter()) {
+            writ.deleteAll();
+        }
     }
 }

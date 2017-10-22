@@ -35,7 +35,7 @@ with open("papers/topics.csv") as topicsfile:
         topic["keywords"] = []
 
         for topic_tuple in ast.literal_eval(row["keywords"]):
-            topic["keywords"].append(topic_tuple[0])
+            topic["keywords"].append(topic_tuple)
 
         topic["occurence"] = row["occurence"]
 
@@ -75,8 +75,9 @@ authors = []
 with open("papers/new_authors.csv") as authorsfile:
     authorreader = csv.DictReader(authorsfile, delimiter=",", quotechar="\"")
     for row in authorreader:
-        author = {"id": row["id"], "name": row["name"], "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
-                  "score": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0])}
+        author = {"id": row["id"], "name": row["name"],
+                  "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
+                  "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0])}
         authors.append(author)
 
 put_request("http://localhost:5002/authors", json.dumps(authors).encode())
@@ -93,7 +94,7 @@ genabstracts = pd.read_csv("papers/gen_abstracts.csv")
 genabstracts.columns = ['paper_id', 'gen_abstract']
 
 for row in merged.itertuples():
-    dict[str(row.paper_id)]['authors'].append({"name":row.name, "id":row.author_id.item()})
+    dict[str(row.paper_id)]['authors'].append({"name": row.name, "id": row.author_id.item()})
 
 for gen_abstract in genabstracts.itertuples():
     if type(gen_abstract.gen_abstract) is float:
@@ -101,24 +102,36 @@ for gen_abstract in genabstracts.itertuples():
     else:
         dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
 
-
 paperpageranks = {}
 
 with open("papers/PaperPageRank.csv") as paperpagerankfile:
     paperpagerankreader = csv.DictReader(paperpagerankfile)
 
     for row in paperpagerankreader:
-        paperpageranks[row["id"]] = row
+        paperpageranks[row["paper_id"]] = row
 
 papers = []
 
 for key, value in dict.items():
+
     value["references"] = []
     value["referencedby"] = []
 
-    value["topics"] = papertopic[value["id"]]
+    topics = papertopic[value["id"]]
 
-    value["rank"] = paperpageranks[row["id"]]["PageRankRank"]
+    value["year"] = int(value["year"])
+
+    if topics:
+        value["topics"] = topics
+    else:
+        value["topics"] = []
+
+    value["rank"] = 3 #paperpageranks[value["id"]]["pagerankrank"]
+    value["score"] = 0.4 # float(paperpageranks[value["id"]]["pagerank"])
+
+    # for topic in value["topics"]:
+    #   topic["rank"] = paperpageranks[value["id"]]["T" + topic["id"] + "PRRank"]
+    #   topic["score"] = float(paperpageranks[value["id"]]["T" + topic["id"] + "PRScore"])
 
     papers.append(value)
 
@@ -137,4 +150,3 @@ with open("papers/citation_graph.csv") as csvfile:
         refs.append({"Source": row["Source"], "Target": row["Target"]})
 
 put_request("http://localhost:5002/references", json.dumps(refs).encode())
-

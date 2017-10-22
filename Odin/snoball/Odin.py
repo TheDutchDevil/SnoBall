@@ -46,6 +46,6 @@ def get_topic():
     return render_template("topic-details.html", topic = topic)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")
 
 

@@ -12,6 +12,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Path("papers")
@@ -22,29 +25,30 @@ public class Insert {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String putPaper(@NotNull Paper paper) {
+    public String putPaper(@NotNull Paper paper) throws IOException {
 
-        if(paper.getTitle() == null) {
-             return genson.serialize(RequestResult.failedResult("Title missing"));
+        if (paper.getTitle() == null) {
+            return genson.serialize(RequestResult.failedResult("Title missing"));
         }
 
-        if(paper.getPaperBody() == null) {
+        if (paper.getPaperBody() == null) {
             return genson.serialize(RequestResult.failedResult("Paper body missing"));
         }
 
-        if(paper.getAuthors() == null || paper.getAuthors().size() == 0) {
+        if (paper.getAuthors() == null || paper.getAuthors().size() == 0) {
             return genson.serialize(RequestResult.failedResult("Authors missing"));
         }
 
-        if(paper.getGen_abstract() == null) {
+        if (paper.getGen_abstract() == null) {
             return genson.serialize(RequestResult.failedResult("gen_abstract missing"));
         }
 
         System.out.println("Indexing: " + paper.getTitle());
 
-        AntonIndexWriter writer = new AntonIndexWriter();
+        try (AntonIndexWriter writer = new AntonIndexWriter()) {
 
-        writer.indexPaper(paper);
+            writer.indexPaper(paper);
+        }
 
         return genson.serialize(RequestResult.succeededResult());
     }
@@ -53,33 +57,67 @@ public class Insert {
     @Path("many")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String putPapers(@NotNull List<Paper> papers) {
+    public String putPapers(@NotNull List<Paper> papers) throws IOException, InterruptedException {
 
-        AntonIndexWriter writer = new AntonIndexWriter();
+        for (Paper paper : papers) {
 
-        for(Paper paper : papers) {
-            if(paper.getTitle() == null) {
+            if (paper.getTitle() == null) {
                 return genson.serialize(RequestResult.failedResult("Title missing"));
             }
 
-            if(paper.getPaperBody() == null) {
+            if (paper.getPaperBody() == null) {
                 return genson.serialize(RequestResult.failedResult("Paper body missing"));
             }
 
-            if(paper.getAuthors() == null || paper.getAuthors().size() == 0) {
+            if (paper.getAuthors() == null) {
                 return genson.serialize(RequestResult.failedResult("Authors missing"));
             }
 
-            if(paper.getGen_abstract() == null) {
+            if (paper.getGen_abstract() == null) {
                 return genson.serialize(RequestResult.failedResult("gen_abstract missing"));
             }
+        }
 
-            System.out.println("Indexing: " + paper.getTitle());
+        try (final AntonIndexWriter writer = new AntonIndexWriter()) {
 
-            writer.indexPaper(paper);
+            List<Thread> threads = new ArrayList<>();
+
+            for (final List<Paper> papersPart : partition(Runtime.getRuntime().availableProcessors(), papers)) {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Paper paper : papersPart) {
+
+                            System.out.println("Indexing: " + paper.getTitle());
+
+                            writer.indexPaper(paper);
+
+                        }
+                    }
+                });
+
+                thread.run();
+                threads.add(thread);
+
+            }
+
+            for (Thread thread : threads) {
+                thread.join();
+            }
         }
 
         return genson.serialize(RequestResult.succeededResult());
+    }
+
+    private List<List<Paper>> partition(int cores, List<Paper> papers) {
+        int partitionSize = (papers.size() / cores) + 1;
+        List<List<Paper>> partitions = new ArrayList<>();
+        for (int i = 0; i < papers.size(); i += partitionSize) {
+            partitions.add(papers.subList(i,
+                    Math.min(i + partitionSize, papers.size())));
+        }
+
+        return partitions;
     }
 
 }

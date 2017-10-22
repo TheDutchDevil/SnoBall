@@ -14,7 +14,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class AntonIndexWriter {
+public class AntonIndexWriter implements AutoCloseable{
 
     public final static String INDEX_NAME = "PAPER_INDEX";
 
@@ -28,14 +28,23 @@ public class AntonIndexWriter {
         indexWriter.deleteAll();
     }
 
+    private final IndexWriter indexWriter;
+
+    public AntonIndexWriter() throws IOException {
+
+
+        FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
+        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
+        config.setRAMBufferSizeMB(2000);
+
+         indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
+
+    }
+
     public void indexPaper(Paper paper) {
 
         try {
-
-            FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
-            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-            org.apache.lucene.index.IndexWriter indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
-
 
             Document doc = new Document();
 
@@ -47,6 +56,9 @@ public class AntonIndexWriter {
 
             doc.add(new StoredField("authors", genson.serialize(paper.getAuthors())));
             doc.add(new StoredField("id", paper.getId()));
+            doc.add(new TextField("year", String.valueOf(paper.getYear()), Field.Store.YES));
+            doc.add(new TextField("score", String.valueOf(paper.getScore()), Field.Store.YES));
+            doc.add(new TextField("rank", String.valueOf(paper.getRank()), Field.Store.YES));
 
             if(paper.getPaperAbstract() == null) {
                 paper.setPaperAbstract("");
@@ -57,18 +69,14 @@ public class AntonIndexWriter {
 
             indexWriter.addDocument(doc);
 
-            indexWriter.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     public void indexAuthor(Author author) {
         try {
-            FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
-            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-            org.apache.lucene.index.IndexWriter indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
 
 
             Document doc = new Document();
@@ -77,14 +85,15 @@ public class AntonIndexWriter {
 
             doc.add(new StoredField("type", "author"));
             doc.add(new StoredField("id", author.getId()));
+            doc.add(new TextField("score", String.valueOf(author.getScore()), Field.Store.YES));
+            doc.add(new TextField("rank", String.valueOf(author.getRank()), Field.Store.YES));
+
 
             if(author.getAlternativeNames() != null) {
                 doc.add(new TextField("alternativeNames", author.getAlternativeNames().replace(",", " "), Field.Store.YES));
             }
 
             indexWriter.addDocument(doc);
-
-            indexWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,9 +102,6 @@ public class AntonIndexWriter {
 
     public void indexTopic(Topic topic) {
         try {
-            FSDirectory directory = new SimpleFSDirectory(Paths.get(INDEX_NAME));
-            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-            org.apache.lucene.index.IndexWriter indexWriter = new org.apache.lucene.index.IndexWriter(directory, config);
 
             Document doc = new Document();
 
@@ -109,12 +115,15 @@ public class AntonIndexWriter {
             doc.add(new StoredField("keywordList", genson.serialize(topic.getKeywords())));
 
             indexWriter.addDocument(doc);
-
-            indexWriter.close();
         }
         catch(IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        indexWriter.close();
     }
 
 
