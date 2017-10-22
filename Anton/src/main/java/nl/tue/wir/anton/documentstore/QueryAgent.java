@@ -41,8 +41,12 @@ public class QueryAgent {
             IndexReader reader = DirectoryReader.open(indexWriter);
             IndexSearcher searcher = new IndexSearcher(reader);
 
+            System.out.println("Answering query: " + query);
+
             Query q = new MultiFieldQueryParser(new String[] {"title", "paperBody", "paperAbstract", "name",
                     "alternativeNames", "gen_abstract", "keyword", "score", "year", "rank"}, analyzer).parse(query);
+
+            q = new TopicBoosterQuery(q);
 
             TotalHitCountCollector counter = new TotalHitCountCollector();
 
@@ -51,6 +55,14 @@ public class QueryAgent {
             TopDocs docs = searcher.search(q, max(1, counter.getTotalHits()));
 
             ScoreDoc hits[] = docs.scoreDocs;
+
+            System.out.print("Top 20 results have scores: [");
+
+            for(int i = 0; i< 20; i++) {
+                System.out.print(String.valueOf(hits[i].score) + (i == 19 ? "]" : ", "));
+            }
+
+            System.out.println();
 
             List<Object> results  = new ArrayList<>();
 
