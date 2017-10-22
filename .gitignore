@@ -29,6 +29,9 @@ papers.csv
 # Log file
 *.log
 
+# numpy file
+*.npy
+
 # BlueJ files
 *.ctxt
 

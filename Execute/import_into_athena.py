@@ -2,6 +2,7 @@ import csv
 import urllib.request
 import json
 import pandas as pd
+import numpy as np
 import math
 
 
@@ -60,16 +61,56 @@ for gen_abstract in genabstracts.itertuples():
     else:
         dict[str(gen_abstract.paper_id)]['gen_abstract'] = gen_abstract.gen_abstract
 
-papers = []
-
+papers = {}
+ids = []
+processed_papers = []
 for key, value in dict.items():
     value["references"] = []
     value["referencedby"] = []
-    papers.append(value)
+    value["relpapers"] = []
+    papers[value['id']] = value
+    ids.append(int(value['id']))
 
 print("Processed papers")
 
-data = json.dumps(papers)
+a = pd.read_csv("papers/id_cluster_hierarchical40.csv")
+grouped = a.groupby(['cluster'])
+
+#Generate all possible combinations with regards to clusters
+combinations = []
+j = 0
+for name, group in grouped:
+    print("Cluster {0}".format(name))
+    paper_ids = (list(group['id']))
+    for id1 in paper_ids:
+        for id2 in paper_ids:
+            if id1 != id2:
+                entry = [id1, id2]
+                combinations.append(entry)
+
+#For each combination save cosine sim, title and author
+d = np.load('papers/cosine_similarity.npy')
+i = 0
+for tuple in combinations:
+    print("{0} of {1}".format(i, len(combinations)))
+    paper_one = papers[str(tuple[0])]
+    paper_two = papers[str(tuple[1])]
+    cosim = d[ids.index(tuple[0])][ids.index(tuple[1])].item()
+    entry = {}
+    entry['id'] = int(tuple[1])
+    entry['sim'] = cosim
+    entry['title'] = paper_two['title']
+    entry['authors'] = paper_two['authors']
+    entry['year'] = paper_two['year']
+    paper_one['relpapers'].append(entry)
+    i+=1
+
+#sort on cosime sim
+for key, value in papers.items():
+    sorted_list = sorted(value['relpapers'], key=lambda k: k['sim'], reverse=True)
+    value['relpapers'] = sorted_list
+
+data = json.dumps(list(papers.values()))
 put_request("http://localhost:5002/papers", data.encode())
 
 print("Imported papers")
@@ -82,5 +123,4 @@ with open("papers/citation_graph.csv") as csvfile:
         refs.append({"Source": row["Source"], "Target": row["Target"]})
 
 put_request("http://localhost:5002/references", json.dumps(refs).encode())
-
 
