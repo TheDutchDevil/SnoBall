@@ -30,7 +30,6 @@ print(np.mean(cosine_sim2.flatten()))
 print("Correlation")
 correlation = np.corrcoef(cocitation_matrix2.flatten(), cosine_sim2.flatten())
 print(correlation[0,1])
-correlation = np.corrcoef(uppertriangle1, uppertriangle2)
 
 nonzeros = np.nonzero(cocitation_matrix2.flatten())[0]
 nonzero_coc = cocitation_matrix2.flatten()[nonzeros]
@@ -49,3 +48,29 @@ print("Correlation")
 correlation = np.corrcoef(nonzero_coc, nonzero_cos)
 print(correlation[0,1])
 
+#%%
+"""
+Including all elements:
+Standard deviation cocitation matrix
+0.00576446643764
+Mean cocitation matrix
+2.78387120761e-05
+Standard deviation cosine similarity matrix
+0.0881481250916
+Mean cosine similarity matrix
+0.147719741552
+Correlation
+0.000527969288998
+
+ Only including nonzero cocitation elements:
+Standard deviation cocitation matrix
+0.350006478499
+Mean  cocitation matrix
+1.08025247971
+Standard deviation cosine similarity matrix
+0.0905238798519
+Mean cosine similarity matrix
+0.141783209713
+Correlation
+0.0343657559557
+"""
