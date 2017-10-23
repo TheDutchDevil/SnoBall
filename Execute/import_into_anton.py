@@ -2,6 +2,7 @@ import csv
 import urllib.request
 import json
 import requests
+import gc
 
 
 class RequestWithMethod(urllib.request.Request):
@@ -55,8 +56,15 @@ for author_raw in author_results:
 
 put_request("http://localhost:2222/authors/many", json.dumps(authors).encode())
 
+author_results = []
+authors = []
+
+gc.collect()
+
 papers = get_request("http://localhost:5002/papers")
 results = json.loads(papers.read())['result']
+
+print("retrieved papers")
 
 papers = []
 
@@ -77,5 +85,10 @@ for temp in results:
     paper["year"] = temp["year"]
     header = {"Content-Type": "application/json"}
     papers.append(paper)
+
+results=[]
+gc.collect()
+
+print("processed papers")
 
 put_request("http://localhost:2222/papers/many", json.dumps(papers).encode())

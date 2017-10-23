@@ -202,8 +202,10 @@ for key, value in papers.items():
     else:
         value["topics"] = []
 
-    value["rank"] = 3  # paperpageranks[value["id"]]["pagerankrank"]
-    value["score"] = 0.4  # float(paperpageranks[value["id"]]["pagerank"])
+    value["rank"] = paperpageranks[value["id"]]["pagerankrank"]
+    value["score"] = float(paperpageranks[value["id"]]["pagerank"])
+
+
 
     # for topic in value["topics"]:
     #   topic["rank"] = paperpageranks[value["id"]]["T" + topic["id"] + "PRRank"]
