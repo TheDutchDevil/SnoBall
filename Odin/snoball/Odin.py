@@ -42,7 +42,9 @@ def get_author():
 def get_topic():
     topicid = request.args.get('id')
     payload = {'id': topicid}
-    topic = json.loads(requests.get('http://localhost:5002/topics', params=payload).text)
+    topic = json.loads(requests.get('http://localhost:5002/topics', params=payload).text)["topic"]
+    topic['minoccurence'] = min(occ[1] for occ in topic['occurence_yearly'])
+    topic['maxoccurence'] = max(occ[1] for occ in topic['occurence_yearly'])
     return render_template("topic-details.html", topic = topic)
 
 if __name__ == "__main__":

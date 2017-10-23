@@ -34,8 +34,11 @@ class Topics(Resource):
 
         if id:
             query = {"id": id}
-            topic  = self.conn.find_entry('SnoBall', 'topics', query)
+            topic = self.conn.find_entry('SnoBall', 'topics', query)
 
+            paper_query = {"topics": {"$elemMatch": {"id":id}}}
+            papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
+            topic['relpapers'] = papers
             return jsonify({"topic": topic})
         else:
             return jsonify({"result": self.conn.get_all_entries('SnoBall', 'topics')})
