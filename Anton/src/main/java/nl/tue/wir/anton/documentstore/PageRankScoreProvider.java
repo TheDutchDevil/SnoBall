@@ -23,6 +23,10 @@ public class PageRankScoreProvider extends CustomScoreProvider {
 
         float score = subQueryScore;
 
+        if(!doc.get("type").equals("topic")) {
+            score = score * Float.parseFloat(doc.get("score"));
+        }
+
         return score;
     }
 }
