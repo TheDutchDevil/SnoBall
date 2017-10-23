@@ -1,6 +1,35 @@
 var resultsTemplate;
 
 authorTotal = 8356;
+paperTotal = 6560;
+
+function addMedalsToAuthor(author) {
+    if (author.rank <= authorTotal / 100) {
+        author.isDiamond = true;
+    } else if (author.rank <= (authorTotal / 100) * 5) {
+        author.isGold = true;
+    } else if (author.rank <= (authorTotal / 100) * 10) {
+        author.isSilver = true;
+    } else if (author.rank <= (authorTotal / 100) * 25) {
+        author.isBronze = true;
+    } else {
+        author.noBadge = true;
+    }
+}
+
+function addMedalsToPaper(paper) {
+    if (paper.rank <= paperTotal / 100) {
+        paper.isDiamond = true;
+    } else if (paper.rank <= (paperTotal / 100) * 5) {
+        paper.isGold = true;
+    } else if (paper.rank <= (paperTotal / 100) * 10) {
+        paper.isSilver = true;
+    } else if (paper.rank <= (paperTotal / 100) * 25) {
+        paper.isBronze = true;
+    } else {
+        paper.noBadge = true;
+    }
+}
 
 function sendQuery() {
     var query_string = $("#query_input").val();
@@ -18,22 +47,15 @@ function sendQuery() {
                 var item = result.items[i];
 
                 if (item.type === "paper") {
+                    item.authors.forEach(function(author) {
+                        addMedalsToAuthor(author)
+                    });
+
+                    addMedalsToPaper(item);
+
                     item.isPaper = true;
                 } else if (item.type === "author") {
-
-                    if (item.rank <= authorTotal / 100) {
-                        item.isDiamond = true;
-                    } else if (item.rank <= (authorTotal / 100) * 5) {
-                        item.isGold = true;
-                    } else if (item.rank <= (authorTotal / 100) * 10) {
-                        item.isSilver = true;
-                    } else if (item.rank <= (authorTotal / 100) * 25) {
-                        item.isBronze = true;
-                    } else {
-                        item.noBadge = true;
-                    }
-
-
+                    addMedalsToAuthor(item);
                     item.isAuthor = true;
                 } else if (item.type === "topic") {
                     item.isTopic = true;

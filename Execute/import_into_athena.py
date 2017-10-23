@@ -77,6 +77,20 @@ with open("papers/papers.csv") as csvfile:
 authorranks = pd.read_csv("papers/AuthorPageRank.csv")
 
 authors = []
+authordictionary = {}
+authortopicdict = {}
+
+with open("papers/authortopic.csv") as authortopic:
+    authortopicreader = csv.DictReader(authortopic, delimiter=",", quotechar="\"")
+    for row in authortopicreader:
+        topicsforauthor = ast.literal_eval(row["topics"])
+
+        nicelist = []
+
+        for topicsrow in topicsforauthor:
+            nicelist.append({"topicid": topicsrow[0], "amount": topicsrow[1]})
+
+        authortopicdict[row["id"]] = nicelist
 
 with open("papers/new_authors.csv") as authorsfile:
     authorreader = csv.DictReader(authorsfile, delimiter=",", quotechar="\"")
@@ -84,8 +98,10 @@ with open("papers/new_authors.csv") as authorsfile:
         author = {"id": row["id"], "name": row["name"],
                   "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
                   "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0]),
-                  "articles": row["numArticles"], "minyear": row["minYear"], "maxyear": row["maxYear"]}
+                  "articles": row["numArticles"], "minyear": row["minYear"], "maxyear": row["maxYear"],
+                  "topics":authortopicdict[row["id"]]}
         authors.append(author)
+        authordictionary[row["id"]] = author
 
 put_request("http://localhost:5002/authors", json.dumps(authors).encode())
 
@@ -101,7 +117,7 @@ genabstracts = pd.read_csv("papers/gen_abstracts.csv")
 genabstracts.columns = ['paper_id', 'gen_abstract']
 
 for row in merged.itertuples():
-    dict[str(row.paper_id)]['authors'].append({"name":row.name, "id":row.author_id.item()})
+    dict[str(row.paper_id)]['authors'].append(authordictionary[str(row.author_id)])
 
 for gen_abstract in genabstracts.itertuples():
     if type(gen_abstract.gen_abstract) is float:

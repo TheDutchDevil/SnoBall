@@ -49,10 +49,18 @@
     {{#if this.isPaper }}
     <div class="result-entry">
         <div>
-            <a href='/paper/details?id={{this.id}}'>{{this.title }}</a>
+            <a href='/paper/details?id={{this.id}}'>{{this.title }}</a> {{#unless
+            this.noBadge}}<i
+                class="fa fa-certificate"
+                style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+                aria-hidden="true"></i>{{/unless}}
         </div>
         <div>
             Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>{{#unless
+            this.noBadge}}<i
+                class="fa fa-certificate"
+                style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+                aria-hidden="true"></i>{{/unless}}{{#unless
             @last}},{{/unless}} {{/each}}
         </div>
     </div>
