@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ topic.name }}</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/main.css">
+    <style>
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .axis path,
+        .axis line {
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text {
+            fill:black;
+            text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+            cursor: move;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ topic.name }}</h2>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        {% for keyword in topic.keywords %}
+                            <li style="margin-left:5px;">{{ keyword.lower() }}{{ "," if not loop.last }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div id="chart"></div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <h6>Top 10 Related papers</h6>
+            </div>
+            <div class="row" id="related">
+                <ul class="list-group">
+                    {% for p in topic.relpapers %}
+                    <li class="list-group-item">
+                        <div>
+                            <a href="../paper/details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
+                        </div>
+                        <div>
+                            {% for a in p.authors %}
+                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <h6>Top 20 Related authors</h6>
+            </div>
+            <div class="row" id="related_authors">
+                <ul class="list-group">
+                    {% for a in topic.relauthors %}
+                    <li class="list-group-item">
+                        <div>
+                            <a href="../author/details?id={{ a.id }}">{{ a.name }}</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+ <script>
+        var margin = {top: 30, right: 20, bottom: 30, left: 50};
+        var width = 500 - margin.left - margin.right;
+        var height = 370 - margin.top - margin.bottom;
+
+        var occurence_yearly = {{ topic.occurence_yearly }};
+
+        //create xScale
+        var first = occurence_yearly[0];
+        var last = occurence_yearly[occurence_yearly.length-1];
+        var x = d3.scaleLinear([first[0], last[0]]).range([0, width]);
+        //create yScale
+        var y = d3.scaleLinear([{{ topic.minoccurence }}, {{ topic.maxoccurence }}]).range([height, 0]);
+
+        // Define the axes
+        var xAxis = d3.axisBottom().scale(x);
+        var yAxis = d3.axisLeft().scale(y);
+
+        var data = occurence_yearly.map(function(d) {
+            return {
+                year: Number(d[0]),
+                occ: Number(d[1])
+            };
+        });
+
+        var valueline = d3.line()
+            .x(function(d) { return x(d.year); })
+            .y(function(d) { return y(d.occ); });
+
+        x.domain(d3.extent(data, function(d) { return d.year; }));
+        y.domain(d3.extent(data, function(d) { return d.occ; }));
+
+        // Adds the svg canvas
+        var svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+
+        // text label for the x axis
+        svg.append("text")
+            .attr("fill", "black")
+            .attr("transform",
+                "translate(" + (width/2) + " ," +
+                           (height + margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .text("Year");
+
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+        // Add the valueline path.
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", valueline(data))
+    </script>
+</body>
+</html>

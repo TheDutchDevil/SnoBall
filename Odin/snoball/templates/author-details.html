@@ -21,7 +21,9 @@
                         Topics:
                     </div>
                     <div class="panel panel-body">
-
+                        {% for t in author.topics %}
+                            <li class="list-group-item"><a href="../topic/details?id={{t.topicid}}">{{t.topicname}}</a></li>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -47,7 +49,9 @@
                         Related authors:
                     </div>
                     <div class="panel panel-body">
-
+                        {% for a in author.relauthors %}
+                            <li class="list-group-item"><a href="/details?id={{a.id}}">{{a.name}}</a></li>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

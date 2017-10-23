@@ -9,6 +9,9 @@ public class Paper extends QueryResultParent {
     private String paperBody;
     private List<Author> authors;
     private int id;
+    private int rank;
+    private double score;
+    private int year;
 
     public String getTitle() {
         return title;
@@ -58,6 +61,29 @@ public class Paper extends QueryResultParent {
         this.gen_abstract = gen_abstract;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
 
     @Override
     public String getType() {

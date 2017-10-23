@@ -3,6 +3,7 @@ package nl.tue.wir.anton.api;
 import com.owlike.genson.Genson;
 import nl.tue.wir.anton.documentstore.AntonIndexWriter;
 import nl.tue.wir.anton.models.Author;
+import nl.tue.wir.anton.models.Paper;
 import nl.tue.wir.anton.models.RequestResult;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("authors")
@@ -21,15 +24,16 @@ public class Authors {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String putAuthor(@NotNull Author author) {
+    public String putAuthor(@NotNull Author author) throws IOException {
 
         if(author.getName() == null) {
             return genson.serialize(RequestResult.failedResult("Name missing"));
         }
 
-        AntonIndexWriter writer = new AntonIndexWriter();
+        try(AntonIndexWriter writer = new AntonIndexWriter()) {
 
-        writer.indexAuthor(author);
+            writer.indexAuthor(author);
+        }
 
         return genson.serialize(RequestResult.succeededResult());
     }
@@ -38,20 +42,51 @@ public class Authors {
     @Path("many")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String putAuthor(@NotNull List<Author> authors) {
+    public String putAuthor(@NotNull List<Author> authors) throws IOException, InterruptedException {
 
-        AntonIndexWriter writer = new AntonIndexWriter();
+        try(final AntonIndexWriter writer = new AntonIndexWriter()) {
 
-        for(Author author : authors) {
-            if (author.getName() == null) {
-                return genson.serialize(RequestResult.failedResult("Name missing"));
+            for (Author author : authors) {
+                if (author.getName() == null) {
+                    return genson.serialize(RequestResult.failedResult("Name missing"));
+                }
             }
 
-            System.out.println("Indexing: " + author.getName());
+            List<Thread> threads = new ArrayList<>();
 
-            writer.indexAuthor(author);
+            for (final List<Author> authorPart : partition(4, authors)) {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Author author : authorPart) {
+                            System.out.println("Indexing: " + author.getName());
+
+                            writer.indexAuthor(author);
+                        }
+                    }
+                });
+
+                thread.start();
+
+                threads.add(thread);
+            }
+
+            for (Thread thread : threads) {
+                thread.join();
+            }
         }
 
         return genson.serialize(RequestResult.succeededResult());
+    }
+
+    private List<List<Author>> partition(int cores, List<Author> papers) {
+        int partitionSize = (papers.size() / cores) + 1;
+        List<List<Author>> partitions = new ArrayList<>();
+        for (int i = 0; i < papers.size(); i += partitionSize) {
+            partitions.add(papers.subList(i,
+                    Math.min(i + partitionSize, papers.size())));
+        }
+
+        return partitions;
     }
 }

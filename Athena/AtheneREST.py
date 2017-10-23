@@ -20,6 +20,41 @@ api = Api(app)
 app.json_encoder = CustomJSONEncoder
 
 
+class Topics(Resource):
+    def __init__(self):
+        self.conn = MongoDbConnector('mongodb://localhost:27017')
+
+    def put(self):
+        topics = request.json
+
+        self.conn.insert_entries('SnoBall', 'topics', topics)
+
+    def get(self):
+        id = request.args.get('id')
+
+        if id:
+            query = {"id": id}
+            topic = self.conn.find_entry('SnoBall', 'topics', query)
+
+            paper_query = {"topics": {"$elemMatch": {"id": id}}}
+            papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
+
+            author_query = {"topics": {"$elemMatch": {"topicid": int(id)}}}
+            authors = list(self.conn.find_entries('SnoBall', 'authors', author_query))
+            for aut in authors:
+                temp = [t for t in aut['topics'] if t['topicid'] == int(id)][0]
+                aut['amount'] = temp['amount']
+
+            sorted_papers = sorted(papers, key=lambda k: k['rank'], reverse=True)
+            sorted_authors = sorted(authors, key=lambda k: k['amount'], reverse=True)
+
+            topic['relpapers'] = sorted_papers[:10]
+            topic['relauthors'] = sorted_authors[:20]
+            return jsonify({"topic": topic})
+        else:
+            return jsonify({"result": self.conn.get_all_entries('SnoBall', 'topics')})
+
+
 class References(Resource):
     def __init__(self):
         self.conn = MongoDbConnector('mongodb://localhost:27017')
@@ -65,7 +100,7 @@ class Authors(Resource):
             query = {"id": id}
             author = self.conn.find_entry('SnoBall', 'authors', query)
 
-            paper_query = {"authors": {"$elemMatch": {"id":1249}}}
+            paper_query = {"authors": {"$elemMatch": {"id": id}}}
             papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
 
             author['papers'] = papers
@@ -106,8 +141,8 @@ class Papers(Resource):
             referencedby_query = {"id": { "$in" : paper["referencedby"]}}
 
 
-            paper["references"] = self.conn.find_entries('SnoBall', 'papers', references_query, projection)
-            paper["referencedby"] = self.conn.find_entries('SnoBall', 'papers', referencedby_query, projection)
+            paper["references"] = self.conn.find_entries_with_projection('SnoBall', 'papers', references_query, projection)
+            paper["referencedby"] = self.conn.find_entries_with_projection('SnoBall', 'papers', referencedby_query, projection)
 
             return jsonify({"result": paper})
         else:
@@ -117,6 +152,7 @@ class Papers(Resource):
 api.add_resource(Authors, '/authors')
 api.add_resource(Papers, '/papers')
 api.add_resource(References, '/references')
+api.add_resource(Topics, '/topics')
 
 if __name__ == '__main__':
     app.run(port='5002')
