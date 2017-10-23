@@ -58,7 +58,7 @@ public class QueryAgent {
 
             System.out.print("Top 20 results have scores: [");
 
-            for(int i = 0; i< 20; i++) {
+            for(int i = 0; i< Math.min(20, hits.length); i++) {
                 System.out.print(String.valueOf(hits[i].score) + (i == 19 ? "]" : ", "));
             }
 

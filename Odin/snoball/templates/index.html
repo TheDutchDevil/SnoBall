@@ -5,6 +5,7 @@
     <title>Snoball</title>
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/main.css">
+    <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
 </head>
 
 <body>
@@ -39,7 +40,10 @@
     {{#each this}}
     {{#if this.isAuthor }}
     <div class="result-entry">
-        <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a>
+        <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a> {{#unless this.noBadge}}<i
+            class="fa fa-certificate"
+            style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+            aria-hidden="true"></i>{{/unless}}
     </div>
     {{/if }}
     {{#if this.isPaper }}

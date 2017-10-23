@@ -47,6 +47,22 @@ def get_topic():
     topic['maxoccurence'] = max(occ[1] for occ in topic['occurence_yearly'])
     return render_template("topic-details.html", topic = topic)
 
+@app.route('/author/rank', methods=['GET'])
+def get_rank():
+    rank = int(request.arge.get('rank'))
+    author_total = 8356
+
+    if rank <= author_total / 100:
+        return "diamond"
+    elif rank <= (author_total /100) * 5:
+        return "gold"
+    elif rank <= (author_total/100) * 10:
+        return "silver"
+    elif rank <= (author_total/100) * 25:
+        return "bronze"
+
+    return "none"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
 

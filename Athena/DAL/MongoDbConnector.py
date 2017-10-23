@@ -22,7 +22,7 @@ class MongoDbConnector:
         collection = self.get_collection_for_database(database_name, collection_name)
         return collection.find(query)
 
-    def find_entries(self, database_name, collection_name, query, projection):
+    def find_entries_with_projection(self, database_name, collection_name, query, projection):
         collection = self.get_collection_for_database(database_name, collection_name)
         return list(collection.find(query, projection))
 

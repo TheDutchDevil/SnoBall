@@ -73,7 +73,7 @@ authors['PageRankScore'] = pageRank(authorList, paperAuthorDf, 1987, 2016)
 
 #%% 
 " PAGERANK VOOR TOPICS"
-paperTopic = pd.DataFrame.from_csv(r'C:\Users\s134277\Documents\GitHub\SnoBall\Athena\TopicModel\paperid_topic_20 topics.csv')
+paperTopic = pd.DataFrame.from_csv(r'C:\Users\s134277\Documents\GitHub\SnoBall\Athena\TopicModel\paperid_topic.csv')
 
 " Create a list with an empty list for each topic "
 topicList = []
@@ -96,7 +96,7 @@ for i in range(num_topics):
 """"Add ranking based on PageRank score"""
 def addRank (authorsTable, rankedBy, namecolumn):
     authorsTable = authorsTable.sort_values(by = rankedBy, ascending = False)
-    authorsTable[namecolumn] = list(range(1,len(authors)+1))
+    authorsTable[namecolumn] = list(range(1,len(authorsTable)+1))
     return authorsTable
 
 authors = addRank(authors, 'PageRankScore', 'PageRankRank')
@@ -127,26 +127,3 @@ columnList = ['id', 'PageRankScore'] + topicScoreList + ['PageRankRank'] + topic
 pageRankOverallAndTopics = authors[columnList] 
 
 pageRankOverallAndTopics.to_csv('PageRankOverallAndTopics.csv', index = False)
-
-#%%
-"""Calculate average PR per paper"""
-paperPageRankLst = []
-unique_papers=paperAuthorOriginal.paper_id.unique()
-
-for paperNum in unique_papers:
-    paperDf=paperAuthorOriginal[paperAuthorOriginal.paper_id==paperNum].author_id
-    PRAuthorLst = []
-    for i, author in paperDf.iteritems():
-        PRAuthorLst.append(authors[authors['id']==author].PageRankScore.iloc[0])
-    PRpaper = sum(PRAuthorLst)/len(PRAuthorLst)
-    paperPageRankLst.append((paperNum, PRpaper))
-
-    
-""" save to file """   
-paperPageRankDf = pd.DataFrame(paperPageRankLst, columns=['paper_id', 'pagerank'])
-
-paperPageRankDf = paperPageRankDf.sort_values(by = 'pagerank', ascending = False)
-paperPageRankDf['pagerankrank'] = list(range(1,len(paperPageRankDf)+1))
-
-
-paperPageRankDf.to_csv('PaperPageRank.csv', index = False)
