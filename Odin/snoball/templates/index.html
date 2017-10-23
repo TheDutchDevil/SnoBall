@@ -41,8 +41,8 @@
     {{#if this.isAuthor }}
     <div class="result-entry">
         <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a> {{#unless this.noBadge}}<i
-            class="fa fa-certificate"
-            style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+            class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
+            style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
             aria-hidden="true"></i>{{/unless}}
     </div>
     {{/if }}
@@ -51,15 +51,15 @@
         <div>
             <a href='/paper/details?id={{this.id}}'>{{this.title }}</a> {{#unless
             this.noBadge}}<i
-                class="fa fa-certificate"
-                style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+                class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
+                style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
                 aria-hidden="true"></i>{{/unless}}
         </div>
         <div>
-            Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>{{#unless
+            Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a> {{#unless
             this.noBadge}}<i
-                class="fa fa-certificate"
-                style="color: {{#if this.isDiamond}}#b9f2ff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+                class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
+                style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
                 aria-hidden="true"></i>{{/unless}}{{#unless
             @last}},{{/unless}} {{/each}}
         </div>
