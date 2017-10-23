@@ -93,14 +93,40 @@ with open("papers/authortopic.csv") as authortopic:
 
         authortopicdict[row["id"]] = nicelist
 
+authordetails = {}
+
+with open("papers/author-info.csv", encoding="utf8")  as authordetailsfile:
+    authordetailsreader=csv.DictReader(authordetailsfile, delimiter=",", quotechar="\"")
+    for row in authordetailsreader:
+        if row["affiliation"] == "":
+            row["hasaffiliation"] = False
+            row["affiliation"] = {}
+        else:
+            row["affiliation"] = ast.literal_eval(row["affiliation"])
+            row["hasaffiliation"] = True
+
+
+        if row["h-index"] == "":
+            row["hashindex"] = False
+            row["hindex"] = -1
+        else:
+            row["hindex"] = float(row["h-index"])
+            row["hashindex"] = True
+
+        authordetails[row["id"]] = row
+
 with open("papers/new_authors.csv") as authorsfile:
     authorreader = csv.DictReader(authorsfile, delimiter=",", quotechar="\"")
     for row in authorreader:
+        authordetail = authordetails[row["id"]]
+
         author = {"id": row["id"], "name": row["name"],
                   "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
                   "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0]),
                   "articles": row["numArticles"], "minyear": row["minYear"], "maxyear": row["maxYear"],
-                  "topics":authortopicdict[row["id"]], "relauthors": []}
+                  "topics":authortopicdict[row["id"]], "relauthors": [],
+                  "hashindex" : authordetail["hashindex"], "hindex":authordetail["hindex"],
+                  "hasaffiliation": authordetail["hasaffiliation"], "affiliation":authordetail["affiliation"]}
         authors[int(row['id'])] = author
         authordictionary[row["id"]] = author
 
