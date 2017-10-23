@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{{ topic.name }}</title>
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="static/main.css">
+    <link rel="stylesheet" type="text/css" href="../static/main.css">
     <style>
         path {
             stroke: steelblue;
@@ -43,8 +43,29 @@
                     </ul>
                 </div>
             </div>
+            <div id="chart"></div>
         </div>
-        <div id="chart"></div>
+        <div class="col-md-12">
+            <div class="row">
+                <h6>Top 20 Related papers</h6>
+            </div>
+            <div class="row" id="related">
+                <ul class="list-group">
+                    {% for p in topic.relpapers %}
+                    <li class="list-group-item">
+                        <div>
+                            <a href="../paper/details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
+                        </div>
+                        <div>
+                            {% for a in p.authors %}
+                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
  <script>
         var margin = {top: 30, right: 20, bottom: 30, left: 50};
