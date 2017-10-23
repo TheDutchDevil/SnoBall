@@ -1,0 +1,21 @@
+###################### CLEAN INSTALLATION ######################################
+1. Start up MongoDb using the mongod command (make sure the SnoBall database is deleted)
+2. Start up AtheneREST using python3.6           (python3.6 AtheneREST.py)
+3. Start up Anton by going into the Execute folder and run (./run.sh or run.exe)
+4. First run insert_into_athene.py this file can be found in the Execute folder
+    this will fill the MongoDb with all relevent entries, make sure all the necessary files (.csv etc.) are inside Execute/papers
+5. Secondly run insert_into_anton.py this file can ve found in the Execute folder
+    this will index all the papers (which were stored in MongoDb)
+6. Start up Odin.py which can be found in the Odin folder. This start the webserver
+7. Start SNOBALLING!
+###############################################################################
+
+###################### Start up system ########################################
+Note. this can only be done if the system already is filled using the steps described in CLEAN INSTALLATION
+1. Start up MongoDB using mongod
+2. Start up AtheneREST.py using python3.6           (python3.6 AtheneREST.py)
+3. Start up Anton by going into the Execute folder and run (./run.sh or run.exe)
+4. Start up Odin.py
+5. Start SNOBALLING!
+###############################################################################
+
