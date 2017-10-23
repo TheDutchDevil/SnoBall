@@ -36,10 +36,20 @@ class Topics(Resource):
             query = {"id": id}
             topic = self.conn.find_entry('SnoBall', 'topics', query)
 
-            paper_query = {"topics": {"$elemMatch": {"id":id}}}
+            paper_query = {"topics": {"$elemMatch": {"id": id}}}
             papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
-            sorted_list = sorted(papers, key=lambda k: k['rank'], reverse=True)
-            topic['relpapers'] = sorted_list[:20]
+
+            author_query = {"topics": {"$elemMatch": {"topicid": int(id)}}}
+            authors = list(self.conn.find_entries('SnoBall', 'authors', author_query))
+            for aut in authors:
+                temp = [t for t in aut['topics'] if t['topicid'] == int(id)][0]
+                aut['amount'] = temp['amount']
+
+            sorted_papers = sorted(papers, key=lambda k: k['rank'], reverse=True)
+            sorted_authors = sorted(authors, key=lambda k: k['amount'], reverse=True)
+
+            topic['relpapers'] = sorted_papers[:10]
+            topic['relauthors'] = sorted_authors[:20]
             return jsonify({"topic": topic})
         else:
             return jsonify({"result": self.conn.get_all_entries('SnoBall', 'topics')})
