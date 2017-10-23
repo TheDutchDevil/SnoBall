@@ -28,7 +28,7 @@ class MongoDbConnector:
 
     def get_all_entries(self, database_name, collection_name):
         collection = self.get_collection_for_database(database_name, collection_name)
-        return list(collection.find({}, {'_id': False}))
+        return list(collection.find({}, {'_id': False, 'relpapers': False, 'topics': False, 'references': False, 'referencedby': False}))
 
     def get_collection_for_database(self, database_name, collection_name):
         return self.client[database_name].collection[collection_name]
