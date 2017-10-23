@@ -100,8 +100,8 @@ class Authors(Resource):
             query = {"id": id}
             author = self.conn.find_entry('SnoBall', 'authors', query)
 
-            paper_query = {"authors": {"$elemMatch": {"id":int(id)}}}
-            papers = list(self.conn.find_entries(database_name='SnoBall', collection_name='papers', query=paper_query))
+            paper_query = {"authors": {"$elemMatch": {"id": id}}}
+            papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
 
             author['papers'] = papers
             return jsonify({"result": author})
