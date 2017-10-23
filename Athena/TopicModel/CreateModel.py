@@ -52,7 +52,7 @@ for i , paper in paper_topic.iterrows():
 corpus = paper_topic['document_term'].values.tolist()
 
 # generate LDA model
-model = models.LdaModel(corpus, id2word=dictionary, alpha='auto', num_topics=10, passes=1) 
+model = models.LdaModel(corpus, id2word=dictionary, alpha='auto', num_topics=20, passes=1) 
 model.save('TitleModel.lda')
 print('model saved')
 
@@ -62,7 +62,7 @@ paper_topic.to_csv('paper_topic.csv')
 #%% Fill assign topics to papers
 for i, paper in paper_topic.iterrows():
     assignedtopics = model[paper[3]]
-    assignedtopics = [T for T in assignedtopics if T[1]>0.2]
+    assignedtopics = [T for T in assignedtopics if T[1]>0.2 and T[0] not in [2,4,8,11,12]]
     paper_topic.set_value(i,'topics', assignedtopics)
 
 #%% Save data to csv
@@ -74,9 +74,30 @@ paperid_topic.to_csv('paperid_topic.csv')
 topics = pd.DataFrame(index=range(model.num_topics),columns=['topicname','keywords','occurence','occurence_yearly'])
 topicnums = []
 for topicnum in range(model.num_topics):
-    topics.set_value(topicnum,'keywords', model.show_topic(topicnum,15))
+    topics.set_value(topicnum,'keywords', model.show_topic(topicnum,30))
     topics.set_value(topicnum,'topicname', ("topic "+str(topicnum)))
     topics.set_value(topicnum,'occurence', 0)
+
+topics.set_value(0,'topicname', ("Brain-Computer-Interfaces"))
+topics.set_value(1,'topicname', ("Boosting"))
+topics.set_value(2,'topicname', ("topic 2"))
+topics.set_value(3,'topicname', ("Probabilistic Methods"))
+topics.set_value(4,'topicname', ("topic 4"))
+topics.set_value(5,'topicname', ("Metric Learning"))
+topics.set_value(6,'topicname', ("Bandit Problems"))
+topics.set_value(7,'topicname', ("Motor Control"))
+topics.set_value(8,'topicname', ("topic 8"))
+topics.set_value(9,'topicname', ("Visual Applications"))
+topics.set_value(10,'topicname', ("Components Analysis and Sparsity"))
+topics.set_value(11,'topicname', ("topic 11"))
+topics.set_value(12,'topicname', ("topic 12"))
+topics.set_value(13,'topicname', ("Neural Networks"))
+topics.set_value(14,'topicname', ("Speech and Letter Recognition"))
+topics.set_value(15,'topicname', ("Lifted Inference Models"))
+topics.set_value(16,'topicname', ("Dimensionality Reduction and Manifold Learning"))
+topics.set_value(17,'topicname', ("Motion and Tracking"))
+topics.set_value(18,'topicname', ("Deep Learning"))
+topics.set_value(19,'topicname', ("Gaussian Processes"))
 
 #%% count total topic occurence
 for i, paper in paperid_topic.iterrows():
@@ -115,6 +136,15 @@ for i, paper in paperid_topic.iterrows():
         yeardata[1] = yeardata[1] + 1
         occurence_yearly[yearid] = yeardata
         topics.set_value(topicnum,'occurence_yearly', occurence_yearly)
+
+#%% remove empty topics
+topics.insert(loc=0, column='id', value=topics.index.values.tolist())
+droplist = []
+for i, topic in topics.iterrows():
+    if topic[3] == 0:
+        droplist.append(i)
+topics = topics.drop(topics.index[droplist])
+
 #%% Save data to csv
 topics.to_csv('topics.csv')
 
@@ -142,5 +172,7 @@ for index, author in new_authors.iterrows():
     distinct = Counter(topics)
     distinct = distinct.most_common()
     new_authors.set_value(index,'topics',distinct)
+new_authors.to_csv('authortopic.csv')
+print('saved')
 #%% Save data to csv
 new_authors.to_csv('authortopic.csv')
