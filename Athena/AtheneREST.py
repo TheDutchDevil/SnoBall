@@ -86,8 +86,8 @@ class Authors(Resource):
             query = {"id": id}
             author = self.conn.find_entry('SnoBall', 'authors', query)
 
-            paper_query = {"authors": {"$elemMatch": {"id":1249}}}
-            papers = list(self.conn.find_entries('SnoBall', 'papers', paper_query))
+            paper_query = {"authors": {"$elemMatch": {"id":int(id)}}}
+            papers = list(self.conn.find_entries(database_name='SnoBall', collection_name='papers', query=paper_query))
 
             author['papers'] = papers
             return jsonify({"result": author})
@@ -127,8 +127,8 @@ class Papers(Resource):
             referencedby_query = {"id": { "$in" : paper["referencedby"]}}
 
 
-            paper["references"] = self.conn.find_entries('SnoBall', 'papers', references_query, projection)
-            paper["referencedby"] = self.conn.find_entries('SnoBall', 'papers', referencedby_query, projection)
+            paper["references"] = self.conn.find_entries_with_projection('SnoBall', 'papers', references_query, projection)
+            paper["referencedby"] = self.conn.find_entries_with_projection('SnoBall', 'papers', referencedby_query, projection)
 
             return jsonify({"result": paper})
         else:
