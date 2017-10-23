@@ -47,7 +47,7 @@
         </div>
         <div class="col-md-12">
             <div class="row">
-                <h6>Top 20 Related papers</h6>
+                <h6>Top 10 Related papers</h6>
             </div>
             <div class="row" id="related">
                 <ul class="list-group">
@@ -60,6 +60,22 @@
                             {% for a in p.authors %}
                                 <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
                             {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <h6>Top 20 Related authors</h6>
+            </div>
+            <div class="row" id="related_authors">
+                <ul class="list-group">
+                    {% for a in topic.relauthors %}
+                    <li class="list-group-item">
+                        <div>
+                            <a href="../author/details?id={{ a.id }}">{{ a.name }}</a>
                         </div>
                     </li>
                     {% endfor %}

@@ -3,7 +3,8 @@ import urllib.request
 import json
 import pandas as pd
 import numpy as np
-import math
+from sklearn.externals import joblib
+
 import ast
 
 
@@ -75,8 +76,7 @@ with open("papers/papers.csv") as csvfile:
         dict[row['id']] = row
 
 authorranks = pd.read_csv("papers/AuthorPageRank.csv")
-
-authors = []
+authors = {}
 authordictionary = {}
 authortopicdict = {}
 
@@ -88,7 +88,8 @@ with open("papers/authortopic.csv") as authortopic:
         nicelist = []
 
         for topicsrow in topicsforauthor:
-            nicelist.append({"topicid": topicsrow[0], "amount": topicsrow[1]})
+            topic = topics[str(topicsrow[0])]
+            nicelist.append({"topicid": topicsrow[0], "amount": topicsrow[1], "topicname": topic["name"]})
 
         authortopicdict[row["id"]] = nicelist
 
@@ -99,11 +100,27 @@ with open("papers/new_authors.csv") as authorsfile:
                   "rank": int(authorranks[authorranks["id"] == int(row["id"])]["PageRankRank"].values[0]),
                   "score": float(authorranks[authorranks["id"] == int(row["id"])]["PageRankScore"].values[0]),
                   "articles": row["numArticles"], "minyear": row["minYear"], "maxyear": row["maxYear"],
-                  "topics":authortopicdict[row["id"]]}
-        authors.append(author)
+                  "topics":authortopicdict[row["id"]], "relauthors": []}
+        authors[int(row['id'])] = author
         authordictionary[row["id"]] = author
 
-put_request("http://localhost:5002/authors", json.dumps(authors).encode())
+cluster_author = joblib.load('papers/cluster_author_dictionary') # key is author id,
+for key, values in cluster_author.items():
+    for aut in values:
+        aid = int(aut['author id'])
+        author = authors[aid]
+        aut['name'] = author['name']
+        aut['pagerank'] = int(aut['pagerank'])
+    for aut1 in values:
+        author = authors[aut1['author id']]
+        for aut2 in values:
+            if aut1['author id'] != aut2['author id']:
+                author['relauthors'].append(aut2)
+        sorted_list = sorted(author['relauthors'], key=lambda k: k['pagerank'], reverse=True)
+        author['relauthors'] = sorted_list
+
+data = list(authors.values())
+put_request("http://localhost:5002/authors", json.dumps(data).encode())
 
 print("Imported authors")
 
@@ -117,7 +134,9 @@ genabstracts = pd.read_csv("papers/gen_abstracts.csv")
 genabstracts.columns = ['paper_id', 'gen_abstract']
 
 for row in merged.itertuples():
-    dict[str(row.paper_id)]['authors'].append(authordictionary[str(row.author_id)])
+    author = authordictionary[str(row.author_id)]
+    author['relauthors'] = None
+    dict[str(row.paper_id)]['authors'].append(author)
 
 for gen_abstract in genabstracts.itertuples():
     if type(gen_abstract.gen_abstract) is float:
