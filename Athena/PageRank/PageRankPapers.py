@@ -8,6 +8,7 @@ import pandas as pd
 import networkx as nx
 import datetime
 import math
+import numpy as np
 
 import os
 
@@ -44,7 +45,7 @@ os.chdir(working_dir)
 
 """import files"""
 papers = pd.read_csv("papers.csv", engine='python')
-papers = paperAuthorOriginal = pd.read_csv('new_paper_authors.csv')
+paperAuthorOriginal = pd.read_csv('new_paper_authors.csv')
 authors = pd.read_csv('new_authors.csv')
 authorList = authors['id'].tolist()
 
@@ -55,8 +56,7 @@ os.chdir(working_dir)
 """import files"""
 citationGraph= pd.read_csv("citation_graph.csv", engine='python')
 
-#%%
-"Calculate PageRank over coauthor graph"
+
 alpha = 0.15 #age parameter
 year = datetime.datetime.now().year
 age = [None] * len(papers)
@@ -66,6 +66,8 @@ for n in range(0,(len(papers))):
     weight[n] = math.exp(-alpha*age[n])
 papers['weight'] = weight
 
+#%%
+"Calculate PageRank over coauthor graph"
 paperAuthorDf = paperAuthorOriginal.merge(papers[['id', 'year','weight']], left_on = 'paper_id', right_on = 'id', how = 'left')[['paper_id','author_id','year','weight']]
 
 authorList = authors['id'].tolist()
@@ -89,9 +91,6 @@ for paperNum in unique_papers:
 """ save to file """   
 paperPageRankDf = pd.DataFrame(paperPageRankLst, columns=['paper_id', 'coauthorPRscore'])
 
-paperPageRankDf = paperPageRankDf.sort_values(by = 'coauthorPRscore', ascending = False)
-paperPageRankDf['coauthorPRrank'] = list(range(1,len(paperPageRankDf)+1))
-
 #%%
 """PageRank over citationgraph"""
 edgeList = citationGraph.values.tolist()
@@ -100,19 +99,10 @@ papersList = papers['id'].tolist()
 citationDG = nx.DiGraph()
 citationDG.add_nodes_from(papersList)
 
-
-alpha = 0.15 #age parameter
-year = datetime.datetime.now().year
-age = [None] * len(papers)
-weight = [None] * len(papers)
-for n in range(0,(len(papers))):
-    age[n] = year - papers.year[n]
-    weight[n] = math.exp(-alpha*age[n])
-papers['weight'] = weight
-
 weightedEdgeList = []
 for item in edgeList:
-    weight = papers[papers['id']==item[0]].weight.tolist()[0]
+#    weight = papers[papers['id']==item[0]].weight.tolist()[0]
+    weight = 1
     weightedEdgeList.append((item[0], item[1], weight))
 
 citationDG.add_weighted_edges_from(weightedEdgeList)
@@ -123,9 +113,58 @@ for index, row in paperPageRankDf.iterrows():
    
 paperPageRankDf['citationPRscore'] = PRScore
 
+#%%
+"""Combined"""
+combScore = [0] * len(paperPageRankDf)
+sumCoAuthorPR = sum(paperPageRankDf['coauthorPRscore'])
+
+for index, row in paperPageRankDf.iterrows():
+    combScore[index]= 0.85*(row['coauthorPRscore'])/sumCoAuthorPR+0.15*row['citationPRscore']
+paperPageRankDf['combScore'] = combScore    
+
+print(np.corrcoef(paperPageRankDf['coauthorPRscore'], paperPageRankDf['combScore']))
+print(np.corrcoef(paperPageRankDf['citationPRscore'], paperPageRankDf['combScore']))
+
+#%%
+"""Add ranking and save to file """
+paperPageRankDf = paperPageRankDf.sort_values(by = 'coauthorPRscore', ascending = False)
+paperPageRankDf['coauthorPRrank'] = list(range(1,len(paperPageRankDf)+1))
+
 paperPageRankDf = paperPageRankDf.sort_values(by = 'citationPRscore', ascending = False)
 paperPageRankDf['citationPRrank'] = list(range(1,len(paperPageRankDf)+1))
 
+paperPageRankDf = paperPageRankDf.sort_values(by = 'combScore', ascending = False)
+paperPageRankDf['combRank'] = list(range(1,len(paperPageRankDf)+1))
+
+columnList = ['paper_id', 'combScore', 'combRank']
+
+paperPageRankFinal = paperPageRankDf[columnList]
+paperPageRankFinal.to_csv('PaperPageRank.csv', index = False)
+
+
 #%%
-"""calculate correlation"""
-coauthorPRScore = paperPageRankDf['coauthorPRscore'].tolist()   
+"""calculate correlation""" 
+test = np.corrcoef(paperPageRankDf['coauthorPRscore'], paperPageRankDf['citationPRscore'])
+np.std(paperPageRankDf['coauthorPRscore'])
+np.std(paperPageRankDf['citationPRscore'])
+np.mean(paperPageRankDf['coauthorPRscore'])
+np.mean(paperPageRankDf['citationPRscore'])
+sum(paperPageRankDf['coauthorPRscore'])
+sum(paperPageRankDf['citationPRscore'])
+
+#%%
+"""Analysis of sparsity of citation graph"""
+isolatesCitationDG = nx.isolates(citationDG) #3754
+numberNodesCitationDG = nx.number_of_nodes(citationDG) #6560
+portionIsolates = len(isolatesCitationDG)/numberNodesCitationDG #0.57
+
+numIsolatesTop1000 = 0
+for index, row in paperPageRankDf.iterrows():
+    if (row['paper_id'] in isolatesCitationDG) and (row['coauthorPRrank']<=1000):
+        numIsolatesTop1000 = numIsolatesTop1000 + 1
+
+"""
+in top 100: 36 authors are isolates
+in top 500: 203 authors are isolates
+in top 1000: 444 authors are isolates
+"""    
