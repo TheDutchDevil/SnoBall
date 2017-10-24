@@ -135,7 +135,7 @@ class Papers(Resource):
             query = {"id": id}
             paper = self.conn.find_entry('SnoBall', 'papers', query)
 
-            projection = {"id":1, "title":1, "rank":1, "year":1}
+            projection = {"id":1, "title":1, "rank":1, "year":1, "authors":1}
 
             references_query = { "id": { "$in": paper["references"]}}
             referencedby_query = {"id": { "$in" : paper["referencedby"]}}

@@ -104,8 +104,17 @@
                 <div class="col-md-12" id="references" style="margin-bottom: 20px;">
                     <ul class="list-group">
                         {% for ref in paper.references %}
-                            <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title}}</a>
-                                ({{ ref.year }}) {{ moaforpaper(ref)|safe }}
+                            <li class="list-group-item">
+                                <div><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
+                                    ({{ ref.year }}) {{ moaforpaper(ref)|safe }}
+                                </div>
+                                <div>
+                                    {% for author in ref.authors %}
+                                        <a href="../author/details?id={{ author.id }}"
+                                           class="author-link">{{ author.name }}</a>
+                                        {{ moaforauthor(author)|safe }}{{ "," if not loop.last }}
+                                    {% endfor %}
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>
@@ -116,8 +125,18 @@
                 <div class="col-md-12" id="referenced-by" style="margin-bottom: 20px;">
                     <ul class="list-group">
                         {% for ref in paper.referencedby %}
-                            <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
-                                ({{ ref.year }}) {{ moaforpaper(ref)|safe }}
+                            <li class="list-group-item">
+                                <div>
+                                    <a href="details?id={{ ref.id }}">{{ ref.title }}</a>
+                                    ({{ ref.year }}) {{ moaforpaper(ref)|safe }}
+                                </div>
+                                <div>
+                                    {% for author in ref.authors %}
+                                        <a href="../author/details?id={{ author.id }}"
+                                           class="author-link">{{ author.name }}</a>
+                                        {{ moaforauthor(author)|safe }}{{ "," if not loop.last }}
+                                    {% endfor %}
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>
@@ -135,11 +154,13 @@
                         {% for p in paper.relpapers[:10] %}
                             <li class="list-group-item">
                                 <div>
-                                    <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}] {{ moaforpaper(p)|safe }}
+                                    <a href="details?id={{ p.id }}">{{ p.title }}</a>
+                                    [{{ p.year }}] {{ moaforpaper(p)|safe }}
                                 </div>
                                 <div id="related-paper-authors">
                                     {% for a in p.authors %}
-                                        <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a> {{ moaforauthor(a)|safe }}
+                                        <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>
+                                        {{ moaforauthor(a)|safe }}
                                         {{ "," if not loop.last }}
                                     {% endfor %}
                                 </div>
