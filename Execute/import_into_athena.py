@@ -134,13 +134,15 @@ cluster_author = joblib.load('papers/cluster_author_dictionary') # key is author
 for key, values in cluster_author.items():
     for aut in values:
         aid = int(aut['author id'])
+        aut['id'] = aid
+        aut['author id'] = None
         author = authors[aid]
         aut['name'] = author['name']
         aut['pagerank'] = int(aut['pagerank'])
     for aut1 in values:
-        author = authors[aut1['author id']]
+        author = authors[aut1['id']]
         for aut2 in values:
-            if aut1['author id'] != aut2['author id']:
+            if aut1['id'] != aut2['id']:
                 author['relauthors'].append(aut2)
         sorted_list = sorted(author['relauthors'], key=lambda k: k['pagerank'], reverse=True)
         author['relauthors'] = sorted_list

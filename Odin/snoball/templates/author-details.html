@@ -38,18 +38,12 @@
         <div class = 'col-md-8' style= "margin-bottom: 20px;">
         	<div class="row" id="topics">
 			    {% for t in author.topics %}
-			        <a href="../topic/details?id={{t.id}}" style="padding-right: 5px;" class="topic-link">
+			        <a href="../topic/details?id={{t.topicid}}" style="padding-right: 5px;" class="topic-link">
 			            {{ t.topicname }}{{ "," if not loop.last }}
 			        </a>
 			    {% endfor %}
 			</div>
         </div>
-                    <!--
-                    <div class="panel panel-body">
-                        {% for t in author.topics %}
-                            <li class="list-group-item"><a href="../topic/details?id={{t.topicid}}">{{t.topicname}}</a></li>
-                        {% endfor %}
-                    </div> -->
 
         <div class="row">
             <div class="col-md-5">
@@ -72,7 +66,7 @@
                     </div>
                     <div class="panel panel-body">
                         {% for a in author.relauthors[0:10] %}
-                            <li class="list-group-item"><a href="../details?id={{ a.id }}" class="author-link">{{a.name}}</a></li>
+                            <li class="list-group-item"><a href="../author/details?id={{a.id}}" class="author-link">{{a.name}}</a></li>
                         {% endfor %}
                     </div>
                 </div>
