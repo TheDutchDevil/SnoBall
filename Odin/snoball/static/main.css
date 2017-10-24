@@ -39,14 +39,21 @@ body{
     width: 100%;
 }
 
-.page-header{ /* page header */
+.navbar-default {
+    background-color: #fafafa!important;
+    border-color: #E7E7E7!important;
+}
+
+/*
+.page-header{ /* page header 
     background-color: #ffffff;
     padding-top: 15px;
     padding-bottom: 10px;
     padding-left: 50px;
     width:100%;
     font-weight: 350;
-}
+} 
+*/
 
 .footer{
     color: #5B5B5B;
