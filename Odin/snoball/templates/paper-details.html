@@ -19,20 +19,44 @@
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="../static/main.css">
+
+    <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
 </head>
 
 <body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="http://localhost:5000/"><h5>SnoBall</h5></a>
+    </div>
+    <form class="navbar-form navbar-left">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search">
+        <div class="input-group-btn">
+          <button class="btn btn-default" onclick="sendQuery()">
+            <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</nav>
+
 <div class = "container-fluid">
+
+<!--
 	<div class = "page-header">
 		<div class="row">
 				<a href ="http://localhost:5000/"><h5>SnoBall</h5></a>
 		</div>
 	</div>
+-->
 </div>
 <div class="container">
     <div class="col-md-12" id="paper-info-field" style="margin-bottom: 20px; margin-top: 20px;">
         <div class="row">
-            <h4>{{ paper.title }}, {{ paper.year }}</h4>
+            <h4>{{ paper.title }} ({{ paper.year }})</h4>
         </div>
         <div class="row" id="authors">
             {% for author in paper.authors %}
@@ -78,7 +102,7 @@
         <div class="row" id="references">
             <ul class="list-group">
                 {% for ref in paper.references %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> ({{ ref.year }})
                     </li>
                 {% endfor %}
             </ul>
@@ -86,23 +110,23 @@
         <div class="row">
             <h6>Referenced by</h6>
         </div>
-        <div class="row" id="referenced-by">
+        <div class="row" id="referenced-by" style="margin-bottom: 20px;"">
             <ul class="list-group">
                 {% for ref in paper.referencedby %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
+                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> ({{ ref.year }})
                     </li>
                 {% endfor %}
             </ul>
         </div>
         <div class="row">
-            <h6>Related papers</h6>
+            <h6>Similar papers</h6>
         </div>
         <div class="row" id="related">
             <ul class="list-group">
-                {% for p in paper.relpapers %}
+                {% for p in paper.relpapers[0:10] %}
                     <li class="list-group-item">
                         <div>
-                            <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}], [{{p.sim}}]
+                            <a href="details?id={{ p.id }}">{{ p.title }}</a> ({{ p.year }}), [{{p.sim}}]
                         </div>
                         <div>
                             {% for a in p.authors %}
