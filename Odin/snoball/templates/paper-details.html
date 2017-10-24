@@ -49,13 +49,14 @@
             <h4>{{ paper.title }} ({{ paper.year }})</h4>
         </div>
         <div class="col-md-12" id="authors">
-            {% for author in paper.authors %}
+            <b style="margin-right: 3px;">Authors: </b>{% for author in paper.authors %}
                 <a href="../author/details?id={{ author.id }}" style="padding-right: 5px;" class="author-link">
                     {{ author.name }}{{ "," if not loop.last }}</a>
             {% endfor %}
         </div>
         <div class="col-md-12" id="topics">
-            {% for topic in paper.topics %}
+            <b style="margin-right: 3px;">{% if paper.topics|length > 0 %}Topics:{% endif%}
+             </b>{% for topic in paper.topics %}
                 <a href="../topic/details?id={{ topic.id }}" style="padding-right: 5px;" class="topic-link">
                     {{ topic.name }}{{ "," if not loop.last }}
                 </a>

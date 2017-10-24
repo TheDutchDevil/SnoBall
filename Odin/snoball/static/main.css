@@ -32,6 +32,10 @@ body{
     background-color: #ffffff;
 }
 
+b {
+    color: #5B5B5B;
+}
+
 .header{/* Home header*/
     padding-top: 20px;
     text-align: center;
