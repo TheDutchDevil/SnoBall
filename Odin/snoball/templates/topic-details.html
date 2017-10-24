@@ -83,7 +83,10 @@
             </div>
         </div>
     </div>
- <script>
+</body>
+<script src="../static/libs/jquery-3.2.1.min.js"></script>
+<script>
+    $(document).ready(function(){
         var margin = {top: 30, right: 20, bottom: 30, left: 50};
         var width = 500 - margin.left - margin.right;
         var height = 370 - margin.top - margin.bottom;
@@ -148,6 +151,6 @@
         svg.append("path")
             .attr("class", "line")
             .attr("d", valueline(data))
-    </script>
-</body>
+    });
+</script>
 </html>
