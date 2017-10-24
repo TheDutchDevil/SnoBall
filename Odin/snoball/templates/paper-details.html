@@ -22,98 +22,108 @@
 </head>
 
 <body>
-<div class = "container-fluid">
-	<div class = "page-header">
-		<div class="row">
-				<a href ="http://localhost:5000/"><h5>SnoBall</h5></a>
-		</div>
-	</div>
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <a href="http://localhost:5000/"><h5>SnoBall</h5></a>
+        </div>
+    </div>
 </div>
 <div class="container">
-    <div class="col-md-12" id="paper-info-field" style="margin-bottom: 20px; margin-top: 20px;">
-        <div class="row">
+    <div class="row" id="paper-info-field" style="margin-bottom: 20px; margin-top: 20px;">
+        <div class="col-md-12">
             <h4>{{ paper.title }}, {{ paper.year }}</h4>
         </div>
-        <div class="row" id="authors">
+        <div class="col-md-12" id="authors">
             {% for author in paper.authors %}
                 <a href="../author/details?id={{ author.id }}" style="padding-right: 5px;" class="author-link">
                     {{ author.name }}{{ "," if not loop.last }}</a>
             {% endfor %}
         </div>
-        <div class="row" id="topics">
+        <div class="col-md-12" id="topics">
             {% for topic in paper.topics %}
-                <a href="../topic/details?id={{topic.id}}" style="padding-right: 5px;" class="topic-link">
+                <a href="../topic/details?id={{ topic.id }}" style="padding-right: 5px;" class="topic-link">
                     {{ topic.name }}{{ "," if not loop.last }}
                 </a>
             {% endfor %}
         </div>
+
     </div>
 
-    <div class="col-md-7" id="abstract">
-        {% if paper.hasAbstract or paper.hasExtractedAbstract %}
+    <div class="row">
+        <div class="col-md-7" id="abstract">
             <div class="row">
-                <h6>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}Abstract</h6>
+                {% if paper.hasAbstract or paper.hasExtractedAbstract %}
+                    <div class="row">
+                        <h6>{% if  not paper.hasAbstract and paper.hasExtractedAbstract %} Extracted {% endif %}
+                            Abstract</h6>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    {% if paper.hasAbstract %}
+                        {{ paper.abstract }}
+                    {% elif paper.hasExtractedAbstract %}
+                        {{ paper.gen_abstract }}
+                    {% endif %}
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <button class="button" type="button" class="btn btn-primary col-md-offset-2 col-md-4"
+                            data-toggle="modal"
+                            data-target="#paper-text-modal">View paper
+                    </button>
+                </div>
             </div>
-        {% endif %}
-        <div class="row">
-            {% if paper.hasAbstract %}
-                {{ paper.abstract }}
-            {% elif paper.hasExtractedAbstract %}
-                {{ paper.gen_abstract }}
-            {% endif %}
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-md-12">
+                    <h6>References</h6>
+                </div>
+                <div class="col-md-12" id="references">
+                    <ul class="list-group">
+                        {% for ref in paper.references %}
+                            <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
+                                [{{ ref.year }}]
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="row">
+                    <h6>Referenced by</h6>
+                </div>
+                <div class="row" id="referenced-by">
+                    <ul class="list-group">
+                        {% for ref in paper.referencedby %}
+                            <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
+                                [{{ ref.year }}]
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="row" style="margin-top: 10px;">
-            <button class = "button" type="button" class="btn btn-primary col-md-offset-2 col-md-4" data-toggle="modal"
-                    data-target="#paper-text-modal">View paper
-            </button>
+
+        <div class="col-md-4 col-md-offset-1">
+            <div class="row">
+                <h6>Related papers</h6>
+            </div>
+            <div class="row" id="related">
+                <ul class="list-group">
+                    {% for p in paper.relpapers %}
+                        <li class="list-group-item">
+                            <div>
+                                <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}], [{{ p.sim }}]
+                            </div>
+                            <div>
+                                {% for a in p.authors %}
+                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 
-
-    <div class="col-md-12" style="margin-top: 20px;">
-
-        <div class="row">
-            <h6>References</h6>
-        </div>
-        <div class="row" id="references">
-            <ul class="list-group">
-                {% for ref in paper.references %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="row">
-            <h6>Referenced by</h6>
-        </div>
-        <div class="row" id="referenced-by">
-            <ul class="list-group">
-                {% for ref in paper.referencedby %}
-                    <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a> [{{ ref.year }}]
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="row">
-            <h6>Related papers</h6>
-        </div>
-        <div class="row" id="related">
-            <ul class="list-group">
-                {% for p in paper.relpapers %}
-                    <li class="list-group-item">
-                        <div>
-                            <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}], [{{p.sim}}]
-                        </div>
-                        <div>
-                            {% for a in p.authors %}
-                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
     <footer class="footer">
         <p>&copy; Groep-6</p>
     </footer>
@@ -126,7 +136,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title col-md-10" id="paper-text-model-title">{{ paper.title }}</h4>
-                <button type="button" class="close col-md-1 col-md-offset-1" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close col-md-1 col-md-offset-1" data-dismiss="modal"
+                        aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
