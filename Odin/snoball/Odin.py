@@ -51,7 +51,6 @@ def get_topic():
 def get_rank():
     rank = int(request.arge.get('rank'))
     author_total = 8356
-
     if rank <= author_total / 100:
         return "diamond"
     elif rank <= (author_total /100) * 5:
@@ -60,7 +59,6 @@ def get_rank():
         return "silver"
     elif rank <= (author_total/100) * 25:
         return "bronze"
-
     return "none"
 
 if __name__ == "__main__":
