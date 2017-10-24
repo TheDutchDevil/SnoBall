@@ -138,13 +138,14 @@ for key, values in cluster_author.items():
         aut['author id'] = None
         author = authors[aid]
         aut['name'] = author['name']
-        aut['pagerank'] = int(aut['pagerank'])
+        aut['rank'] = int(author['rank'])
+        aut['pagerank'] = None
     for aut1 in values:
         author = authors[aut1['id']]
         for aut2 in values:
             if aut1['id'] != aut2['id']:
                 author['relauthors'].append(aut2)
-        sorted_list = sorted(author['relauthors'], key=lambda k: k['pagerank'], reverse=True)
+        sorted_list = sorted(author['relauthors'], key=lambda k: k['rank'], reverse=True)
         author['relauthors'] = sorted_list
 
 data = list(authors.values())
@@ -206,6 +207,14 @@ for name, group in grouped:
 
     done_clusters = done_clusters + 1
 
+paperpageranks = {}
+
+with open("papers/PaperPageRank.csv") as paperpagerankfile:
+    paperpagerankreader = csv.DictReader(paperpagerankfile)
+
+    for row in paperpagerankreader:
+        paperpageranks[row["paper_id"]] = row
+
 #For each combination save cosine sim, title and author
 d = np.load('papers/cosine_similarity.npy')
 i = 0
@@ -221,16 +230,11 @@ for tuple in combinations:
     entry['title'] = paper_two['title']
     entry['authors'] = paper_two['authors']
     entry['year'] = paper_two['year']
+    entry["rank"] = paperpageranks[str(tuple[1])]["pagerankrank"]
     paper_one['relpapers'].append(entry)
     i+=1
 
-paperpageranks = {}
 
-with open("papers/PaperPageRank.csv") as paperpagerankfile:
-    paperpagerankreader = csv.DictReader(paperpagerankfile)
-
-    for row in paperpagerankreader:
-        paperpageranks[row["paper_id"]] = row
 
 
 #sort on cosime sim

@@ -6,6 +6,7 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/main.css">
     <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" />
+    <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <style>
         path {
@@ -77,7 +78,7 @@
                     {% for a in topic.relauthors %}
                     <li class="list-group-item">
                         <div>
-                            <a href="../author/details?id={{ a.id }}">{{ a.name }}</a>
+                            <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a> {{ moaforauthor(a)|safe }}
                         </div>
                     </li>
                     {% endfor %}

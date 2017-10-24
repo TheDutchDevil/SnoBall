@@ -38,7 +38,7 @@
 <div class="container">
     <div class="col-md-12" style="margin-top: 20px;">
         <div class='row'>
-            <h4>{{ author.name }}</h4>
+            <h4>{{ author.name }} {{ moaforauthor(author)|safe }}</h4>
         </div>
     </div>
     {% if author.hasaffiliation %}
@@ -78,11 +78,11 @@
                     {% for pap in author.papers|sort(attribute='year', reverse = True) %}
                         <li class="list-group-item">
                         	<div>
-                        		<a href="../paper/details?id={{ pap.id }}">{{ pap.title }} </a> ({{ pap.year}})
+                        		<a href="../paper/details?id={{ pap.id }}">{{ pap.title }} </a> ({{ pap.year}}) {{ moaforpaper(pap)|safe }}
                         	</div>
                         	<div>
                         		{% for a in pap.authors %}
-                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}{{ "," if not loop.last }}</a>
+                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>{{ "," if not loop.last }} {{ moaforauthor(a)|safe }}
                                 {% endfor %}
                         	</div>
                         </li>
@@ -99,7 +99,7 @@
                 <div class="panel panel-body">
                     {% for a in author.relauthors[0:10] %}
                         <li class="list-group-item"><a href="../author/details?id={{ a.id }}"
-                                                       class="author-link">{{ a.name }}</a></li>
+                                                       class="author-link">{{ a.name }}</a> {{ moaforauthor(a)|safe }}</li>
                     {% endfor %}
                 </div>
             </div>
