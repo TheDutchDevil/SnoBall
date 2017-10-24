@@ -33,55 +33,45 @@
     <script src="../static/query.js"></script>
 </head>
 <body>
-<<<<<<< HEAD
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="../"><h5>SnoBall</h5></a>
-            </div>
-            <form class="navbar-form navbar-left">
-                <div class="input-group">
-                    <input id="query-header" type="text" class="form-control" placeholder="Search">
-                    <div class="input-group-btn">
-                        <button id="query-header-button" class="btn btn-default" onclick="return sendQueryToMain()">
-                            <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
-                        </button>
-                    </div>
-                </div>
-            </form>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../"><h5>SnoBall</h5></a>
         </div>
-    </nav>
+        <form class="navbar-form navbar-left">
+            <div class="input-group">
+                <input id="query-header" type="text" class="form-control" placeholder="Search">
+                <div class="input-group-btn">
+                    <button id="query-header-button" class="btn btn-default" onclick="return sendQueryToMain()">
+                        <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</nav>
 
-    <div class="container">
-=======
 <div class="container">
-    <div class="row">
->>>>>>> 595a4c7aaf2eefb4976cfd5beb532c5adf73e39d
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">{{ topic.name }}</h4>
-                </div>
-                <div class="panel-body" style="margin-bottom: 20px;">
-                    <ul class="nav nav-pills nav-stacked">
-                        <b style="margin-right: 3px;">Keywords: </b>
-                        {% for keyword in topic.keywords %}
-                            <li style="margin-left:5px;">{{ keyword.lower() }}{{ "," if not loop.last }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">{{ topic.name }}</h4>
             </div>
-            <h6>Number of papers about {{ topic.name }} over time </h6>
-            <div id="chart"></div>
-<<<<<<< HEAD
+            <div class="panel-body" style="margin-bottom: 20px;">
+                <ul class="nav nav-pills nav-stacked">
+                    <b style="margin-right: 3px;">Keywords: </b>
+                    {% for keyword in topic.keywords %}
+                        <li style="margin-left:5px;">{{ keyword.lower() }}{{ "," if not loop.last }}</li>
+                    {% endfor %}
+                </ul>
             </div>
-        <div class="col-md-12">
-=======
         </div>
+        <h6>Number of papers about {{ topic.name }} over time </h6>
+        <div id="chart"></div>
+
     </div>
     <div class="row">
         <div class="col-md-8">
->>>>>>> 595a4c7aaf2eefb4976cfd5beb532c5adf73e39d
             <div class="row">
                 <div class="col-md-12">
                     <h6>Top 10 Related papers</h6>
