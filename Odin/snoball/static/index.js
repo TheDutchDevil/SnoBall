@@ -31,8 +31,11 @@ function addMedalsToPaper(paper) {
     }
 }
 
-function sendQuery() {
-    var query_string = $("#query_input").val();
+function sendQueryUrl(query_string) {
+    var searchParams = new URLSearchParams(window.location.search)
+    searchParams.set("q", query_string);
+    var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+    history.pushState(null, '', newRelativePathQuery);
 
     $.ajax({
         url: '/sendquery',
@@ -47,7 +50,7 @@ function sendQuery() {
                 var item = result.items[i];
 
                 if (item.type === "paper") {
-                    item.authors.forEach(function(author) {
+                    item.authors.forEach(function (author) {
                         addMedalsToAuthor(author)
                     });
 
@@ -72,6 +75,26 @@ function sendQuery() {
     });
 }
 
+
+function sendQuery() {
+    var queryString = $("#query_input").val();
+
+    sendQueryUrl(queryString);
+}
+
+function readQueryStrings() {
+    var searchParams = new URLSearchParams(window.location.search);
+
+    var query = searchParams.get("q");
+
+    if (query !== null) {
+        $("#query_input").val(query);
+        sendQueryUrl(query);
+    }
+}
+
+readQueryStrings();
+
 window.onload = function () {
     var source = $("#results-template").html();
     resultsTemplate = Handlebars.compile(source);
@@ -79,6 +102,12 @@ window.onload = function () {
     Handlebars.registerHelper('eq', function (val, val2, block) {
         if (val == val2) {
             return block(this);
+        }
+    });
+
+        $("#query_input").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#main-query-button").click();
         }
     });
 };

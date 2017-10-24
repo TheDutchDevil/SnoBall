@@ -6,6 +6,8 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/main.css">
     <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
+    <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
 <body>
@@ -14,9 +16,13 @@
         <h2>SnoBall</h2>
         <h3>Your guide in machine learning research.</h3>
     </div>
-    <div class="col-md-12" align="center">
-        <input class="col-md-4" id="query_input" placeholder="Type your query and start SnoBalling.">
-        <button class="button col-md-1" onclick="sendQuery()"> Go!</button>
+    <div class="row">
+        <div class="col-md-5 offset-md-3">
+            <input class="col-md-5 offset-md-3" id="query_input" placeholder="Type your query and start SnoBalling.">
+        </div>
+        <div class="col-md-1">
+            <button id="main-query-button" class="button col-md-1" onclick="sendQuery()"> Go!</button>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-2">
@@ -44,24 +50,28 @@
 <script id="results-template" type="text/x-handlebars-template">
     {{#each this}}
     {{#if this.isAuthor }}
-    <div class="result-entry">
-        <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a> {{#unless this.noBadge}}<i
-            class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
-            style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
-            aria-hidden="true"></i>{{/unless}}
+    <div class="result-entry row">
+        <div class="col-md-12">
+            <a href='/author/details?id={{this.id}}' class="author-link">{{ this.name }}</a> {{#unless
+            this.noBadge}}<i
+                class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
+                style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
+                aria-hidden="true"></i>{{/unless}}
+        </div>
     </div>
     {{/if }}
     {{#if this.isPaper }}
-    <div class="result-entry">
-        <div>
+    <div class="result-entry row">
+        <div class="col-md-12">
             <a href='/paper/details?id={{this.id}}'>{{this.title }}</a> {{#unless
             this.noBadge}}<i
                 class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
                 style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
                 aria-hidden="true"></i>{{/unless}}
         </div>
-        <div>
-            Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a> {{#unless
+        <div class="col-md-12">
+            Written by: {{#each authors}} <a href="author/details?id={{this.id}}" class="author-link">{{this.name}}</a>
+            {{#unless
             this.noBadge}}<i
                 class="fa {{#if this.isDiamond}}fa-diamond{{else}}fa-certificate{{/if}}"
                 style="color: {{#if this.isDiamond}}#05ceff{{/if}}{{#if this.isGold}}gold{{/if}}{{#if this.isSilver}}silver{{/if}}{{#if this.isBronze}}#cd7f32{{/if}};"
@@ -71,8 +81,8 @@
     </div>
     {{/if }}
     {{#if this.isTopic}}
-    <div class="result-entry">
-        Topic: <a href="/topic/details?id={{this.id}}" class="topic-link">{{this.name}}</a>
+    <div class="result-entry row">
+        <div class="col-md-12">Topic: <a href="/topic/details?id={{this.id}}" class="topic-link">{{this.name}}</a></div>
     </div>
     {{/if}}
     {{/each }}

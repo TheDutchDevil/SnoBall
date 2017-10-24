@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title> {{ author.name }} </title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/main.css">
     <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
-
+    <script src="../static/query.js"></script>
+    <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="http://localhost:5000/"><h5>SnoBall</h5></a>
+            <a class="navbar-brand" href="../"><h5>SnoBall</h5></a>
         </div>
         <form class="navbar-form navbar-left">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search">
+                <input id="query-header" type="text" class="form-control" placeholder="Search">
                 <div class="input-group-btn">
-                    <button class="btn btn-default" onclick="sendQuery()">
+                    <button id="query-header-button" class="btn btn-default" onclick="return sendQueryToMain()">
                         <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
                     </button>
                 </div>

@@ -20,7 +20,12 @@
 
     <link rel="stylesheet" type="text/css" href="../static/main.css">
 
+    <script src="../static/query.js"></script>
+
     <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
+
+    <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
 <body>
@@ -32,9 +37,9 @@
         </div>
         <form class="navbar-form navbar-left">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search">
+                <input id="query-header" type="text" class="form-control" placeholder="Search">
                 <div class="input-group-btn">
-                    <button class="btn btn-default" onclick="sendQuery()">
+                    <button id="query-header-button" class="btn btn-default" onclick="return sendQueryToMain()">
                         <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
                     </button>
                 </div>
@@ -115,25 +120,27 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-md-offset-1">
-            <div class="row">
-                <h6>Similar papers</h6>
-            </div>
+        <div class="col-md-4">
             <div class="row" id="related">
-                <ul class="list-group">
-                    {% for p in paper.relpapers[:10] %}
-                        <li class="list-group-item">
-                            <div>
-                                <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
-                            </div>
-                            <div id="related-paper-authors">
-                                {% for a in p.authors %}
-                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>
-                                {% endfor %}
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="col-md-12">
+                    <h6>Similar papers</h6>
+                </div>
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        {% for p in paper.relpapers[:10] %}
+                            <li class="list-group-item">
+                                <div>
+                                    <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
+                                </div>
+                                <div id="related-paper-authors">
+                                    {% for a in p.authors %}
+                                        <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
