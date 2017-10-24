@@ -57,11 +57,11 @@
                     {% for p in topic.relpapers %}
                     <li class="list-group-item">
                         <div>
-                            <a href="../paper/details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
+                            <a href="../paper/details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}] {{ moaforpaper(p)|safe }}
                         </div>
                         <div>
                             {% for a in p.authors %}
-                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a>
+                                <a href="../author/details?id={{ a.id }}" class="author-link">{{a.name}}</a> {{ moaforauthor(a)|safe }} {{ "," if not loop.last}}
                             {% endfor %}
                         </div>
                     </li>
