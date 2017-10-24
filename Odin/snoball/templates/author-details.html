@@ -82,7 +82,7 @@
                         	</div>
                         	<div>
                         		{% for a in pap.authors %}
-                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>{{ "," if not loop.last }} {{ moaforauthor(a)|safe }}
+                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a> {{ moaforauthor(a)|safe }}{{ "," if not loop.last }}
                                 {% endfor %}
                         	</div>
                         </li>
