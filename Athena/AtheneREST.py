@@ -48,8 +48,8 @@ class Topics(Resource):
             sorted_papers = sorted(papers, key=lambda k: k['rank'], reverse=True)
             sorted_authors = sorted(authors, key=lambda k: k['amount'], reverse=True)
 
-            topic['relpapers'] = sorted_papers[:10]
-            topic['relauthors'] = sorted_authors[:20]
+            topic['relpapers'] = sorted_papers
+            topic['relauthors'] = sorted_authors
             return jsonify({"topic": topic})
         else:
             return jsonify({"result": self.conn.get_all_entries('SnoBall', 'topics')})
