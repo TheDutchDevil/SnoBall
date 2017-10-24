@@ -6,34 +6,56 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../static/main.css">
+    <script src="https://use.fontawesome.com/c347c62c2e.js"></script>
+
 </head>
 <body>
+
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="http://localhost:5000/"><h5>SnoBall</h5></a>
+	    </div>
+	    <form class="navbar-form navbar-left">
+	      <div class="input-group">
+	        <input type="text" class="form-control" placeholder="Search">
+	        <div class="input-group-btn">
+	          <button class="btn btn-default" onclick="sendQuery()">
+	            <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
+	          </button>
+	        </div>
+	      </div>
+	    </form>
+	  </div>
+	</nav>
+
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2>{{ author.name }}</h2>
+        <div class="col-md-12" style="margin-top: 20px;">
+        	<div class = 'row'>
+            		<h4>{{ author.name }}</h4>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel panel-heading">
-                        Topics:
-                    </div>
+        <div class = 'col-md-8' style= "margin-bottom: 20px;">
+        	<div class="row" id="topics">
+			    {% for t in author.topics %}
+			        <a href="../topic/details?id={{t.id}}" style="padding-right: 5px;" class="topic-link">
+			            {{ t.topicname }}{{ "," if not loop.last }}
+			        </a>
+			    {% endfor %}
+			</div>
+        </div>
+                    <!--
                     <div class="panel panel-body">
                         {% for t in author.topics %}
                             <li class="list-group-item"><a href="../topic/details?id={{t.topicid}}">{{t.topicname}}</a></li>
                         {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </div> -->
 
         <div class="row">
             <div class="col-md-5">
                 <div class="panel panel-default">
                     <div class="panel panel-heading">
-                        Papers written by this author:
+                      <h6> Papers written by this author </h6>
                     </div>
                     <div class="panel panel-body">
                         {% for pap in author.papers %}
@@ -46,11 +68,11 @@
             <div class="col-md-5">
                 <div class="panel panel-default col-md-6">
                     <div class="panel panel-heading">
-                        Related authors:
+                        <h6>Related authors</h6>
                     </div>
                     <div class="panel panel-body">
-                        {% for a in author.relauthors %}
-                            <li class="list-group-item"><a href="/details?id={{a.id}}">{{a.name}}</a></li>
+                        {% for a in author.relauthors[0:10] %}
+                            <li class="list-group-item"><a href="../details?id={{ a.id }}" class="author-link">{{a.name}}</a></li>
                         {% endfor %}
                     </div>
                 </div>
@@ -59,3 +81,5 @@
     </div>
 </body>
 </html>
+
+
