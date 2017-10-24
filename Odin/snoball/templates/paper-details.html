@@ -46,16 +46,17 @@
 <div class="container">
     <div class="row" id="paper-info-field" style="margin-bottom: 20px; margin-top: 20px;">
         <div class="col-md-12">
-            <h4>{{ paper.title }} [{{ paper.year }}]</h4>
+            <h4>{{ paper.title }} ({{ paper.year }})</h4>
         </div>
         <div class="col-md-12" id="authors">
-            {% for author in paper.authors %}
+            <b style="margin-right: 3px;">Authors: </b>{% for author in paper.authors %}
                 <a href="../author/details?id={{ author.id }}" style="padding-right: 5px;" class="author-link">
                     {{ author.name }}{{ "," if not loop.last }}</a>
             {% endfor %}
         </div>
         <div class="col-md-12" id="topics">
-            {% for topic in paper.topics %}
+            <b style="margin-right: 3px;">{% if paper.topics|length > 0 %}Topics:{% endif%}
+             </b>{% for topic in paper.topics %}
                 <a href="../topic/details?id={{ topic.id }}" style="padding-right: 5px;" class="topic-link">
                     {{ topic.name }}{{ "," if not loop.last }}
                 </a>
@@ -80,7 +81,7 @@
                         {{ paper.gen_abstract }}
                     {% endif %}
                 </div>
-                <div class="col-md-12" style="margin-top: 10px;">
+                <div class="col-md-12" style="margin-top: 10px; margin-bottom: 20px;">
                     <button class="button" type="button" class="btn btn-primary col-md-offset-2 col-md-4"
                             data-toggle="modal"
                             data-target="#paper-text-modal">View paper
@@ -89,25 +90,25 @@
             </div>
             <div class="row" id="references">
                 <div class="col-md-12">
-                    <h6>References</h6>
+                    <h6>{% if paper.references|length > 0 %}References{% endif%}</h6>
                 </div>
-                <div class="col-md-12" id="references">
+                <div class="col-md-12" id="references" style="margin-bottom: 20px;">
                     <ul class="list-group">
                         {% for ref in paper.references %}
                             <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
-                                [{{ ref.year }}]
+                                ({{ ref.year }})
                             </li>
                         {% endfor %}
                     </ul>
                 </div>
                 <div class="col-md-12">
-                    <h6>Referenced by</h6>
+                    <h6>{% if paper.referencedby|length > 0 %}Referenced by{% endif%}</h6>
                 </div>
-                <div class="col-md-12" id="referenced-by">
+                <div class="col-md-12" id="referenced-by" style="margin-bottom: 20px;">
                     <ul class="list-group">
                         {% for ref in paper.referencedby %}
                             <li class="list-group-item"><a href="details?id={{ ref.id }}">{{ ref.title }}</a>
-                                [{{ ref.year }}]
+                                ({{ ref.year }})
                             </li>
                         {% endfor %}
                     </ul>
@@ -124,11 +125,11 @@
                     {% for p in paper.relpapers[:10] %}
                         <li class="list-group-item">
                             <div>
-                                <a href="details?id={{ p.id }}">{{ p.title }}</a> [{{ p.year }}]
+                                <a href="details?id={{ p.id }}">{{ p.title }}</a> ({{ p.year }})
                             </div>
                             <div id="related-paper-authors">
                                 {% for a in p.authors %}
-                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}</a>
+                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}{{ "," if not loop.last }}</a>
                                 {% endfor %}
                             </div>
                         </li>

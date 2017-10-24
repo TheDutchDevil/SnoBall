@@ -11,68 +11,95 @@
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-	  <div class="container-fluid">
-	    <div class="navbar-header">
-	      <a class="navbar-brand" href="http://localhost:5000/"><h5>SnoBall</h5></a>
-	    </div>
-	    <form class="navbar-form navbar-left">
-	      <div class="input-group">
-	        <input type="text" class="form-control" placeholder="Search">
-	        <div class="input-group-btn">
-	          <button class="btn btn-default" onclick="sendQuery()">
-	            <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
-	          </button>
-	        </div>
-	      </div>
-	    </form>
-	  </div>
-	</nav>
-
-    <div class="container">
-        <div class="col-md-12" style="margin-top: 20px;">
-        	<div class = 'row'>
-            		<h4>{{ author.name }}</h4>
-            </div>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://localhost:5000/"><h5>SnoBall</h5></a>
         </div>
-        <div class = 'col-md-8' style= "margin-bottom: 20px;">
-        	<div class="row" id="topics">
-			    {% for t in author.topics %}
-			        <a href="../topic/details?id={{t.topicid}}" style="padding-right: 5px;" class="topic-link">
-			            {{ t.topicname }}{{ "," if not loop.last }}
-			        </a>
-			    {% endfor %}
-			</div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-5">
-                <div class="panel panel-default">
-                    <div class="panel panel-heading">
-                      <h6> Papers written by this author </h6>
-                    </div>
-                    <div class="panel panel-body">
-                        {% for pap in author.papers %}
-                            <li class="list-group-item"><a href="../paper/details?id={{pap.id}}">{{pap.title}}</a></li>
-                        {% endfor %}
-                    </div>
+        <form class="navbar-form navbar-left">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" onclick="sendQuery()">
+                        <i class="fa fa-search" aria-hidden="true" style="color:#ffffff"> </i>
+                    </button>
                 </div>
             </div>
+        </form>
+    </div>
+</nav>
 
-            <div class="col-md-5">
-                <div class="panel panel-default col-md-6">
-                    <div class="panel panel-heading">
-                        <h6>Related authors</h6>
-                    </div>
-                    <div class="panel panel-body">
-                        {% for a in author.relauthors[0:10] %}
-                            <li class="list-group-item"><a href="../author/details?id={{a.id}}" class="author-link">{{a.name}}</a></li>
-                        {% endfor %}
-                    </div>
+<div class="container">
+    <div class="col-md-12" style="margin-top: 20px;">
+        <div class='row'>
+            <h4>{{ author.name }}</h4>
+        </div>
+    </div>
+    {% if author.hasaffiliation %}
+        <div class="col-md-12">
+        	<div class="row" id="topics">
+	            <b style="margin-right: 3px;">Topics: </b>
+	            {% for t in author.topics %}
+	                <a href="../topic/details?id={{ t.topicid }}" style="padding-right: 5px;" class="topic-link">
+	                    {{ t.topicname }}{{ "," if not loop.last }}
+	                </a>
+	            {% endfor %}
+	        </div>
+        </div>
+    {% endif %}
+    {% if author.hashindex %}
+        <div class="col-md-12">
+            <div class="row">
+                <b style="margin-right: 3px;">Institute: </b> {{ author.affiliation["affiliation-name"] }}, {{ author.affiliation["affiliation-city"] }}
+            </div>
+        </div>
+    {% endif %}
+    <div class='col-md-8' style="margin-bottom: 20px;">
+    	<div class="row">
+            <b style="margin-right: 3px;">H-index: </b> {{ author.hindex|round }}
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-7" style="margin-bottom: 20px;">
+            <div class="panel panel-default">
+                <div class="panel panel-heading">
+                    <h6>Papers written by this author </h6>
+                </div>
+
+                <div class="panel panel-body">
+                    {% for pap in author.papers|sort(attribute='year', reverse = True) %}
+                        <li class="list-group-item">
+                        	<div>
+                        		<a href="../paper/details?id={{ pap.id }}">{{ pap.title }} </a> ({{ pap.year}})
+                        	</div>
+                        	<div>
+                        		{% for a in pap.authors %}
+                                    <a href="../author/details?id={{ a.id }}" class="author-link">{{ a.name }}{{ "," if not loop.last }}</a>
+                                {% endfor %}
+                        	</div>
+                        </li>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="panel panel-default col-md-6">
+                <div class="panel panel-heading">
+                    <h6>Related authors</h6>
+                </div>
+                <div class="panel panel-body">
+                    {% for a in author.relauthors[0:10] %}
+                        <li class="list-group-item"><a href="../author/details?id={{ a.id }}"
+                                                       class="author-link">{{ a.name }}</a></li>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
 
