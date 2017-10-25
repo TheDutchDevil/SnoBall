@@ -97,7 +97,7 @@
                     <h6>Related authors</h6>
                 </div>
                 <div class="panel panel-body">
-                    {% for a in author.relauthors[0:10] %}
+                    {% for a in (author.relauthors|sort(attribute='rank'))[0:10] %}
                         <li class="list-group-item"><a href="../author/details?id={{ a.id }}"
                                                        class="author-link">{{ a.name }}</a> {{ moaforauthor(a)|safe }}</li>
                     {% endfor %}
